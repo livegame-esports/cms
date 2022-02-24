@@ -51,8 +51,8 @@
 					<button class="btn btn-outline-primary" type="button" onclick="admin_change_gag({id});">Изменить</button>
 				</div>
 				<select id="user_gag" class="form-control">
-					<option value="1" {if('{gag}' == '1')}selected{/if}>Включен</option>
-					<option value="2" {if('{gag}' == '2')}selected{/if}>Выключен</option>
+					<option value="1" {if('{gag}'=='1' )}selected{/if}>Включен</option>
+					<option value="2" {if('{gag}'=='2' )}selected{/if}>Выключен</option>
 				</select>
 			</div>
 		</div>
@@ -262,7 +262,7 @@
 				</select>
 			</div>
 		</div>
-		
+
 		<div class="form-group">
 			<label>
 				<h4>
@@ -299,7 +299,7 @@
 						<input type="hidden" id="admin_change_avatar" name="admin_change_avatar" value="1">
 						<input type="hidden" id="phpaction" name="phpaction" value="1">
 
-						<input type="file" id="user_avatar" accept="image/*" name="user_avatar"/><br>
+						<input type="file" id="user_avatar" accept="image/*" name="user_avatar" /><br>
 						<input class="btn btn-outline-primary" type="submit" value="Загрузить">
 
 						<div id="edit_user_avatar_result"></div>
@@ -324,7 +324,7 @@
 		$(document).ready(function() {
 			init_tinymce("signature", "lite", "{file_manager_theme}", "", "");
 		});
-		$("#edit_user_avatar_form").submit(function (event){
+		$("#edit_user_avatar_form").submit(function(event) {
 			NProgress.start();
 			event.preventDefault();
 			var data = new FormData($('#edit_user_avatar_form')[0]);
@@ -334,7 +334,7 @@
 				data: data,
 				contentType: false,
 				processData: false,
-			}).done(function (html) {
+			}).done(function(html) {
 				$("#edit_user_avatar_result").empty();
 				$("#edit_user_avatar_result").append(html);
 				$('#edit_user_avatar_form')[0].reset();
@@ -362,9 +362,9 @@
 					<td>Уведомления на почту</td>
 					<td>
 						{if('{email_notice}'=='1')}
-							<p class="text-success mb-0">Включено</p>
+						<p class="text-success mb-0">Включено</p>
 						{else}
-							<p class="text-danger mb-0">Выключено</p>
+						<p class="text-danger mb-0">Выключено</p>
 						{/if}
 					</td>
 				</tr>
@@ -372,9 +372,9 @@
 					<td>Доступ к лс</td>
 					<td>
 						{if('{im}'=='1')}
-							<p class="text-success mb-0">Всем</p>
+						<p class="text-success mb-0">Всем</p>
 						{else}
-							<p class="text-danger mb-0">Только друзья</p>
+						<p class="text-danger mb-0">Только друзья</p>
 						{/if}
 					</td>
 				</tr>
@@ -382,9 +382,9 @@
 					<td>Приглашен</td>
 					<td>
 						{if('{invited}'=='0')}
-							Не является рефералом
+						Не является рефералом
 						{else}
-							<a href="../profile?id={invited}" target="_blank"><b>{invited_login}</b></a>
+						<a href="../profile?id={invited}" target="_blank"><b>{invited_login}</b></a>
 						{/if}
 					</td>
 				</tr>
@@ -396,22 +396,22 @@
 					<td>Последний IP</td>
 					<td>
 						{if('{ip}'=='127.0.0.1')}
-							Неизвестно
+						Неизвестно
 						{else}
-							{ip}
+						{ip}
 						{/if}
 					</td>
 				</tr>
 				{if('{ip}'!='127.0.0.1')}
-					<td>Местоположение</td>
-					<td id="place">
-						Неизвестно
-					</td>
-					<script>
-						$.getJSON('//api.sypexgeo.net/json/{ip}', function(resp){
-							$('#place').html(resp.country.name_ru+', '+resp.region.name_ru+', '+resp.city.name_ru);
-						});
-					</script>
+				<td>Местоположение</td>
+				<td id="place">
+					Неизвестно
+				</td>
+				<script>
+					$.getJSON('//api.sypexgeo.net/json/{ip}', function(resp) {
+						$('#place').html(resp.country.name_ru + ', ' + resp.region.name_ru + ', ' + resp.city.name_ru);
+					});
+				</script>
 				{/if}
 			</table>
 		</div>
@@ -440,29 +440,27 @@
 						<td colspan="3">Профили не найдены</td>
 					</tr>
 					{else}
-						{for($i=0; $i < count($multi_accounts); $i++)}
-							{if($multi_accounts[$i][0] != 0)}
-							<tr id="multi-account-{{$multi_accounts[$i][0]}}">
-								<td>
-									<a href="../edit_user?id={{$multi_accounts[$i][0]}}" target="_blank">{{$multi_accounts[$i][2]}}</a>
-									<span class="m-icon icon-remove" tooltip="yes" onclick="dell_multi_account_relation({id}, {{$multi_accounts[$i][0]}}); dell_block('multi-account-{{$multi_accounts[$i][0]}}');" title="Очистить связь с профилем"></span>
-									<span class="m-icon icon-trash" tooltip="yes" onclick="dell_user({{$multi_accounts[$i][0]}}, 2, 1); dell_block('multi-account-{{$multi_accounts[$i][0]}}');" title="Удалить профиль"></span>
-								</td>
-								<td>
-									{if($multi_accounts[$i][1] == 1)}
-										Совпадение по IP
-									{/if}
-									{if($multi_accounts[$i][1] == 2)}
-										<p class="text-warning mb-0">Совпадение по ОС и информации браузера</p>
-									{/if}
-									{if($multi_accounts[$i][1] == 3)}
-										<p class="text-danger mb-0">Совпадение по ОС, информации браузера и IP</p>
-									{/if}
-								</td>
-							</tr>
+					{for($i=0; $i < count($multi_accounts); $i++)} {if($multi_accounts[$i][0] !=0)} <tr id="multi-account-{{$multi_accounts[$i][0]}}">
+						<td>
+							<a href="../edit_user?id={{$multi_accounts[$i][0]}}" target="_blank">{{$multi_accounts[$i][2]}}</a>
+							<span class="m-icon icon-remove" tooltip="yes" onclick="dell_multi_account_relation({id}, {{$multi_accounts[$i][0]}}); dell_block('multi-account-{{$multi_accounts[$i][0]}}');" title="Очистить связь с профилем"></span>
+							<span class="m-icon icon-trash" tooltip="yes" onclick="dell_user({{$multi_accounts[$i][0]}}, 2, 1); dell_block('multi-account-{{$multi_accounts[$i][0]}}');" title="Удалить профиль"></span>
+						</td>
+						<td>
+							{if($multi_accounts[$i][1] == 1)}
+							Совпадение по IP
 							{/if}
+							{if($multi_accounts[$i][1] == 2)}
+							<p class="text-warning mb-0">Совпадение по ОС и информации браузера</p>
+							{/if}
+							{if($multi_accounts[$i][1] == 3)}
+							<p class="text-danger mb-0">Совпадение по ОС, информации браузера и IP</p>
+							{/if}
+						</td>
+						</tr>
+						{/if}
 						{/for}
-					{/if}
+						{/if}
 				</tbody>
 			</table>
 		</div>
@@ -484,10 +482,14 @@
 				<tbody id="operations">
 					<tr>
 						<td colspan="10">
-							<div class="loader"></div>	
+							<div class="loader"></div>
 						</td>
 					</tr>
-					<script>get_user_shilings_operations({id});</script>
+					<script>
+						get_user_shilings_operations({
+							id
+						});
+					</script>
 				</tbody>
 			</table>
 		</div>

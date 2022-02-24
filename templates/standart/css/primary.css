@@ -2278,7 +2278,7 @@ div[id^=store_info] table.table > tbody[id^=admins_services] > tr > td select {
 .profile-page .profile > img {
   width: 100%;
   margin-bottom: 15px;
-  border-radius: 1px;
+  border-radius: 8px;
 }
 .profile-page .profile .vertical-navigation span.m-icon {
   display: none;

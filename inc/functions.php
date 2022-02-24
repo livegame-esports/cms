@@ -1,5 +1,6 @@
 <?php
-function db_connect($db_host, $db_db, $db_user, $db_pass) {
+function db_connect($db_host, $db_db, $db_user, $db_pass)
+{
 	try {
 		$pdo = new PDO(
 			"mysql:host=" . $db_host . ";dbname=" . $db_db,
@@ -7,10 +8,10 @@ function db_connect($db_host, $db_db, $db_user, $db_pass) {
 			htmlspecialchars_decode($db_pass, ENT_QUOTES)
 		);
 		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	} catch(PDOException $e) {
+	} catch (PDOException $e) {
 		global $conf;
 
-		if(isset($conf->secret)) {
+		if (isset($conf->secret)) {
 			$file = get_log_file_name("pdo_errors");
 
 			file_put_contents(
@@ -26,29 +27,30 @@ function db_connect($db_host, $db_db, $db_user, $db_pass) {
 	return $pdo;
 }
 
-function db_get_info($pdo = null, $what = null, $from = null, $where = null, $limit = null) {
-	if(empty($pdo) || empty($what) || empty($from)) {
+function db_get_info($pdo = null, $what = null, $from = null, $where = null, $limit = null)
+{
+	if (empty($pdo) || empty($what) || empty($from)) {
 		return false;
 	}
 
 	$what = explode(' ', $what);
 	$what_str = '';
-	for($i = 0; $i < count($what); $i++) {
-		$what_str .= '`'.clean($what[$i], null).'`,';
+	for ($i = 0; $i < count($what); $i++) {
+		$what_str .= '`' . clean($what[$i], null) . '`,';
 	}
 	$what_str = substr($what_str, 0, -1);
 
 	$from_str = clean($from, null);
 
 	$where_str = '';
-	if(preg_match("/([a-zA-Z0-9\"]{1,50}) ?(!=|=|<|>) ?([a-zA-Z0-9\"]{1,50})/", $where)) {
-		$where_str = 'WHERE '.$where;
+	if (preg_match("/([a-zA-Z0-9\"]{1,50}) ?(!=|=|<|>) ?([a-zA-Z0-9\"]{1,50})/", $where)) {
+		$where_str = 'WHERE ' . $where;
 	}
 
 	$limit_str = '';
 	$limit = clean($limit, "int");
-	if(!empty($limit)) {
-		$limit_str = 'LIMIT '.$limit;
+	if (!empty($limit)) {
+		$limit_str = 'LIMIT ' . $limit;
 	}
 
 	$STH = $pdo->query("SELECT $what_str FROM `$from_str` $where_str $limit_str");
@@ -58,14 +60,16 @@ function db_get_info($pdo = null, $what = null, $from = null, $where = null, $li
 	return $row;
 }
 
-function set_prefix($prefix, $table) {
-	if(!empty($prefix)) {
-		$table = $prefix.'_'.$table;
+function set_prefix($prefix, $table)
+{
+	if (!empty($prefix)) {
+		$table = $prefix . '_' . $table;
 	}
 	return $table;
 }
 
-function get_ai($pdo, $table, $column = 'id') {
+function get_ai($pdo, $table, $column = 'id')
+{
 	$STH = $pdo->query("SELECT $column FROM $table ORDER BY $column DESC LIMIT 1");
 	$STH->setFetchMode(PDO::FETCH_OBJ);
 	$row = $STH->fetch();
@@ -73,66 +77,71 @@ function get_ai($pdo, $table, $column = 'id') {
 	return $row->$column + 1;
 }
 
-function set_names($pdo, $code = 0) {
-	if(empty($code)) {
+function set_names($pdo, $code = 0)
+{
+	if (empty($code)) {
 		$code = 0;
 	}
-	if($code == 1) {
+	if ($code == 1) {
 		$pdo->exec("set names utf8");
 	}
-	if($code == 2) {
+	if ($code == 2) {
 		$pdo->exec("set names latin1");
 	}
-	if($code == 3) {
+	if ($code == 3) {
 		$pdo->exec("set names utf8mb4");
 	}
 	return true;
 }
 
-function check_table($table, $pdo) {
+function check_table($table, $pdo)
+{
 	$table = check($table, null);
 
 	$STH = $pdo->prepare("SHOW TABLES LIKE :table");
-	$STH->execute(array(":table" => "%".$table."%"));
+	$STH->execute(array(":table" => "%" . $table . "%"));
 	$row = $STH->fetchAll();
 	$count = count($row);
-	for($i = 0; $i < $count; $i++) {
-		if(isset($row[0][$i]) && $table == $row[0][$i]) {
+	for ($i = 0; $i < $count; $i++) {
+		if (isset($row[0][$i]) && $table == $row[0][$i]) {
 			return true;
 		}
 	}
 	return false;
 }
 
-function check_column($table, $pdo, $column) {
+function check_column($table, $pdo, $column)
+{
 	$table = check($table, null);
 
 	$STH = $pdo->query("SHOW COLUMNS FROM $table");
 	$STH->execute();
 	$row = $STH->fetchAll();
-	for($i = 0; $i < count($row); $i++) {
-		if(isset($row[$i]['Field']) && ($row[$i]['Field'] == $column)) {
+	for ($i = 0; $i < count($row); $i++) {
+		if (isset($row[$i]['Field']) && ($row[$i]['Field'] == $column)) {
 			return true;
 		}
 	}
 	return false;
 }
 
-function get_rows_count($pdo, $table, $where) {
-	$STH = $pdo->query("SELECT COUNT(*) as count FROM `$table` WHERE ".$where);
+function get_rows_count($pdo, $table, $where)
+{
+	$STH = $pdo->query("SELECT COUNT(*) as count FROM `$table` WHERE " . $where);
 	return $STH->fetchColumn();
 }
 
-function service_log($log, $admin, $server, $pdo, $service = 0) {
+function service_log($log, $admin, $server, $pdo, $service = 0)
+{
 	$file = get_log_file_name("services_log");
 
-	if(file_exists($_SERVER['DOCUMENT_ROOT'] . "/logs/" . $file)) {
+	if (file_exists($_SERVER['DOCUMENT_ROOT'] . "/logs/" . $file)) {
 		$i = "a";
 	} else {
 		$i = "w";
 	}
 
-	if(isset($_SESSION['id']) and isset($_SESSION['login'])) {
+	if (isset($_SESSION['id']) and isset($_SESSION['login'])) {
 		$user = $_SESSION['login'] . ' - ' . $_SESSION['id'];
 	} else {
 		$user = 'Админ Центр';
@@ -148,7 +157,7 @@ function service_log($log, $admin, $server, $pdo, $service = 0) {
 	$STH->execute([':id' => $admin]);
 	$admin = $STH->fetch();
 
-	if($service === 0) {
+	if ($service === 0) {
 		$service = 'Все';
 	} else {
 		$STH = $pdo->prepare("SELECT name FROM services WHERE id=:id LIMIT 1");
@@ -161,91 +170,97 @@ function service_log($log, $admin, $server, $pdo, $service = 0) {
 	fwrite(
 		$error_file,
 		"[" . date("Y-m-d H:i:s")
-		. " | Пользователь: " . $user
-		. " | Сервер: " . $server->name
-		. " | Идентификатор: " . $admin->name
-		. " | Услуга: " . $service
-		. "] : [" . $log . "] \r\n"
+			. " | Пользователь: " . $user
+			. " | Сервер: " . $server->name
+			. " | Идентификатор: " . $admin->name
+			. " | Услуга: " . $service
+			. "] : [" . $log . "] \r\n"
 	);
 	fclose($error_file);
 }
 
-function log_error($error) {
+function log_error($error)
+{
 	$file = get_log_file_name("error_log");
 
-	if(isset($_SESSION['login']) and isset($_SESSION['id'])) {
-		$user = $_SESSION['login']." - ".$_SESSION['id'];
+	if (isset($_SESSION['login']) and isset($_SESSION['id'])) {
+		$user = $_SESSION['login'] . " - " . $_SESSION['id'];
 	} else {
 		$user = "Гость";
 	}
 
-	if(file_exists($_SERVER['DOCUMENT_ROOT']."/logs/".$file)) {
+	if (file_exists($_SERVER['DOCUMENT_ROOT'] . "/logs/" . $file)) {
 		$i = "a";
 	} else {
 		$i = "w";
 	}
 
-	$error_file = fopen($_SERVER['DOCUMENT_ROOT']."/logs/".$file, $i);
-	fwrite($error_file, "[".date("Y-m-d H:i:s")." | ".$_SERVER["REMOTE_ADDR"]." | ".$user."] : [".$error."] \r\n");
+	$error_file = fopen($_SERVER['DOCUMENT_ROOT'] . "/logs/" . $file, $i);
+	fwrite($error_file, "[" . date("Y-m-d H:i:s") . " | " . $_SERVER["REMOTE_ADDR"] . " | " . $user . "] : [" . $error . "] \r\n");
 	fclose($error_file);
 }
 
-function write_log($log) {
+function write_log($log)
+{
 	$file = get_log_file_name("log");
 
-	if(isset($_SESSION['login']) and isset($_SESSION['id'])) {
-		$user = $_SESSION['login']." - ".$_SESSION['id'];
+	if (isset($_SESSION['login']) and isset($_SESSION['id'])) {
+		$user = $_SESSION['login'] . " - " . $_SESSION['id'];
 	} else {
 		$user = "Гость";
 	}
 
-	if(file_exists($_SERVER['DOCUMENT_ROOT']."/logs/".$file)) {
+	if (file_exists($_SERVER['DOCUMENT_ROOT'] . "/logs/" . $file)) {
 		$i = "a";
 	} else {
 		$i = "w";
 	}
 
-	$log_file = fopen($_SERVER['DOCUMENT_ROOT']."/logs/".$file, $i);
-	fwrite($log_file, "[".date("Y-m-d H:i:s")." | ".$_SERVER["REMOTE_ADDR"]." | ".$user."] : [".$log."] \r\n");
+	$log_file = fopen($_SERVER['DOCUMENT_ROOT'] . "/logs/" . $file, $i);
+	fwrite($log_file, "[" . date("Y-m-d H:i:s") . " | " . $_SERVER["REMOTE_ADDR"] . " | " . $user . "] : [" . $log . "] \r\n");
 	fclose($log_file);
 }
 
-function ValidateInt($variable) {
-	if(is_numeric($variable) && $variable > 0 && (int)($variable) == $variable) {
+function ValidateInt($variable)
+{
+	if (is_numeric($variable) && $variable > 0 && (int)($variable) == $variable) {
 		return true;
 	} else {
 		return false;
 	}
 }
 
-function ValidateNameForUrl($variable) {
-	if(preg_match("/[\||\'|\<|\>|\[|\]|\"|\!|\?|\$|\@|\#|\%|\^|\/|\\\|\&|\~|\*|\{|\}|\+|\:|\.|\,|\;|\`|\=|\(|\)|\§|\°]/", $variable)) {
+function ValidateNameForUrl($variable)
+{
+	if (preg_match("/[\||\'|\<|\>|\[|\]|\"|\!|\?|\$|\@|\#|\%|\^|\/|\\\|\&|\~|\*|\{|\}|\+|\:|\.|\,|\;|\`|\=|\(|\)|\§|\°]/", $variable)) {
 		return true;
 	} else {
 		return false;
 	}
 }
 
-function ValidateLetterAndNum($variable) {
-	if(preg_match("/^[a-z\d]{1}[a-z\d\s]*[a-z\d]{1}$/i", $variable)) {
+function ValidateLetterAndNum($variable)
+{
+	if (preg_match("/^[a-z\d]{1}[a-z\d\s]*[a-z\d]{1}$/i", $variable)) {
 		return true;
 	} else {
 		return false;
 	}
 }
 
-function clean($variable, $param = null) {
+function clean($variable, $param = null)
+{
 	$variable = magic_quotes($variable);
 	$variable = htmlspecialchars($variable, ENT_QUOTES);
 	$variable = trim($variable);
 
 	//$variable = preg_replace('/[^(\x20-\x7F)]*/','', $variable); //crutch
 
-	if($param == "int") {
+	if ($param == "int") {
 		$variable = preg_replace('/[^0-9]+/', '', $variable);
 		//$variable = abs(intval($variable));
 	}
-	if($param == "float") {
+	if ($param == "float") {
 		$variable = str_replace(',', '.', $variable);
 		$variable = preg_replace('/[^0-9.]/', '', $variable);
 		$variable = (float)$variable;
@@ -254,44 +269,47 @@ function clean($variable, $param = null) {
 	return $variable;
 }
 
-function check($variable, $param) {
-	if(isset($variable)) {
+function check($variable, $param)
+{
+	if (isset($variable)) {
 		$variable = clean($variable, $param);
-		if($variable == '') {
+		if ($variable == '') {
 			unset($variable);
 		}
 	}
-	if(isset($variable)) {
+	if (isset($variable)) {
 		return $variable;
 	} else {
 		return null;
 	}
 }
 
-function checkJs($variable, $param = null) {
-	if(isset($variable)) {
+function checkJs($variable, $param = null)
+{
+	if (isset($variable)) {
 		$variable = clean($variable, $param);
-		if(isset($variable) and $variable == '') {
+		if (isset($variable) and $variable == '') {
 			unset($variable);
 		}
-		if(isset($variable) and $variable == 'undefined') {
+		if (isset($variable) and $variable == 'undefined') {
 			unset($variable);
 		}
 	}
-	if(isset($variable)) {
+	if (isset($variable)) {
 		return $variable;
 	} else {
 		return null;
 	}
 }
 
-function checkStart($variable) {
-	if(isset($variable)) {
+function checkStart($variable)
+{
+	if (isset($variable)) {
 		$variable = clean($variable, "int");
-		if($variable == '' and $variable != 0) {
+		if ($variable == '' and $variable != 0) {
 			unset($variable);
 		}
-		if($variable == "undefined") {
+		if ($variable == "undefined") {
 			$variable = 0;
 		}
 		return $variable;
@@ -300,51 +318,58 @@ function checkStart($variable) {
 	}
 }
 
-function clean_name($name) {
+function clean_name($name)
+{
 	$name = trim(str_replace('#', "", $name));
 	$name = trim(str_replace('/', "", $name));
 	$name = trim(str_replace(':', "", $name));
-	if(mb_strlen($name, 'UTF-8') > 230) {
+	if (mb_strlen($name, 'UTF-8') > 230) {
 		$name = substr($name, 230);
 	}
 	return $name;
 }
 
-function get_month($i, $type = 1) {
-	if($type == 1) {
-		$months = array(1  => 'января',
-		                2  => 'февраля',
-		                3  => 'марта',
-		                4  => 'апреля',
-		                5  => 'мая',
-		                6  => 'июня',
-		                7  => 'июля',
-		                8  => 'августа',
-		                9  => 'сентября',
-		                10 => 'октября',
-		                11 => 'ноября',
-		                12 => 'декабря');
-	} elseif($type == 2) {
-		$months = array(1  => 'январь',
-		                2  => 'февраль',
-		                3  => 'март',
-		                4  => 'апрель',
-		                5  => 'май',
-		                6  => 'июнь',
-		                7  => 'июль',
-		                8  => 'август',
-		                9  => 'сентябрь',
-		                10 => 'октябрь',
-		                11 => 'ноябрь',
-		                12 => 'декабрь');
+function get_month($i, $type = 1)
+{
+	if ($type == 1) {
+		$months = array(
+			1  => 'января',
+			2  => 'февраля',
+			3  => 'марта',
+			4  => 'апреля',
+			5  => 'мая',
+			6  => 'июня',
+			7  => 'июля',
+			8  => 'августа',
+			9  => 'сентября',
+			10 => 'октября',
+			11 => 'ноября',
+			12 => 'декабря'
+		);
+	} elseif ($type == 2) {
+		$months = array(
+			1  => 'январь',
+			2  => 'февраль',
+			3  => 'март',
+			4  => 'апрель',
+			5  => 'май',
+			6  => 'июнь',
+			7  => 'июль',
+			8  => 'август',
+			9  => 'сентябрь',
+			10 => 'октябрь',
+			11 => 'ноябрь',
+			12 => 'декабрь'
+		);
 	} else {
 		$months = array(1 => '01', 2 => '02', 3 => '03', 4 => '04', 5 => '05', 6 => '06', 7 => '07', 8 => '08', 9 => '09', 10 => '10', 11 => '11', 12 => '12');
 	}
 	return $months[$i];
 }
 
-function expand_date($date, $type = 1) {
-	if(clean($date, "int") == $date) {
+function expand_date($date, $type = 1)
+{
+	if (clean($date, "int") == $date) {
 		$time = $date;
 	} else {
 		$time = strtotime($date);
@@ -356,27 +381,27 @@ function expand_date($date, $type = 1) {
 	$hour = date('H', $time);
 	$min = date('i', $time);
 
-	if($type == 0) {
+	if ($type == 0) {
 		return "$hour:$min";
 	}
-	if($type == 1) {
+	if ($type == 1) {
 		return "$day $month $year г, $hour:$min";
 	}
-	if($type == 2) {
+	if ($type == 2) {
 		return "$day $month $year г";
 	}
-	if($type == 3) {
+	if ($type == 3) {
 		return "$day $month $year";
 	}
-	if($type == 4) {
-		if($day < 10) {
-			$day = "0".$day;
+	if ($type == 4) {
+		if ($day < 10) {
+			$day = "0" . $day;
 		}
 		$month = get_month(date('n', $time), 3);
 		$year = substr($year, 2);
 		return "$day.$month.$year";
 	}
-	if($type == 5) {
+	if ($type == 5) {
 		$dtnew['day'] = date('j', $time);
 		$dtnew['year'] = date('Y', $time);
 		$dtnew['hour'] = date('G', $time);
@@ -386,33 +411,33 @@ function expand_date($date, $type = 1) {
 		$dtnew['month3'] = get_month(date('n', $time), 3);
 		return $dtnew;
 	}
-	if($type == 6) {
+	if ($type == 6) {
 		return "$day $month в $hour:$min";
 	}
 
 	$yesterday = strtotime('yesterday');
 
-	if($type == 7) {
+	if ($type == 7) {
 		$dif = time() - $time;
-		if($dif < 59) {
-			if($dif < 15) {
+		if ($dif < 59) {
+			if ($dif < 15) {
 				return "Только что";
 			} else {
 				return $dif . " сек. назад";
 			}
-		} elseif($dif / 60 > 1 and $dif / 60 < 59) {
+		} elseif ($dif / 60 > 1 and $dif / 60 < 59) {
 			return round($dif / 60) . " мин. назад";
-		} elseif($dif / 3600 > 1 and $dif / 3600 < 23) {
+		} elseif ($dif / 3600 > 1 and $dif / 3600 < 23) {
 			return round($dif / 3600) . " час. назад";
-		} elseif($time > $yesterday && $time < ($yesterday + 24 * 3600)) {
+		} elseif ($time > $yesterday && $time < ($yesterday + 24 * 3600)) {
 			return "Вчера в $hour:$min";
-		} elseif($time > ($yesterday - 24 * 3600) && $time < $yesterday) {
+		} elseif ($time > ($yesterday - 24 * 3600) && $time < $yesterday) {
 			return "Позавчера в $hour:$min";
 		} else {
 			return "$day $month $year г, $hour:$min";
 		}
 	}
-	if($type == 8) {
+	if ($type == 8) {
 		$dtnew['short'] = "$hour:$min";
 		$dtnew['full'] = "$day $month $year г";
 		return $dtnew;
@@ -421,26 +446,28 @@ function expand_date($date, $type = 1) {
 	return $date;
 }
 
-function expand_seconds($time) {
-	if($time < 59) {
-		$time = $time."сек.";
-	} elseif($time / 60 > 1 and $time / 60 < 59) {
-		$time = round($time / 60)." мин.";
-	} elseif($time / 3600 > 1 and $time / 3600 < 23) {
-		$time = round($time / 3600)." час.";
-	} elseif($time / 86400 > 1 and $time / 86400 < 7) {
-		$time = round($time / 86400)." сут.";
-	} elseif($time / 86400 / 7 > 1 and $time < 60 * 60 * 24 * 365) {
-		$time = round($time / 86400 / 7)." нед.";
-	} elseif($time > 60 * 60 * 24 * 365) {
-		$time = round($time / 60 / 60 / 24 / 365)." лет.";
+function expand_seconds($time)
+{
+	if ($time < 59) {
+		$time = $time . "сек.";
+	} elseif ($time / 60 > 1 and $time / 60 < 59) {
+		$time = round($time / 60) . " мин.";
+	} elseif ($time / 3600 > 1 and $time / 3600 < 23) {
+		$time = round($time / 3600) . " час.";
+	} elseif ($time / 86400 > 1 and $time / 86400 < 7) {
+		$time = round($time / 86400) . " сут.";
+	} elseif ($time / 86400 / 7 > 1 and $time < 60 * 60 * 24 * 365) {
+		$time = round($time / 86400 / 7) . " нед.";
+	} elseif ($time > 60 * 60 * 24 * 365) {
+		$time = round($time / 60 / 60 / 24 / 365) . " лет.";
 	}
 
 	return $time;
 }
 
-function expand_seconds2($seconds, $type = null) {
-	if($seconds == 0) {
+function expand_seconds2($seconds, $type = null)
+{
+	if ($seconds == 0) {
 		return "Навсегда";
 	}
 	$days = (int)($seconds / (24 * 3600));
@@ -450,39 +477,40 @@ function expand_seconds2($seconds, $type = null) {
 	$minutes = (int)($seconds / 60);
 	$seconds -= $minutes * 60;
 
-	if($days != 0) {
-		$days = $days." суток ";
+	if ($days != 0) {
+		$days = $days . " суток ";
 	} else {
 		$days = '';
 	}
-	if($hours != 0) {
-		$hours = $hours." час. ";
+	if ($hours != 0) {
+		$hours = $hours . " час. ";
 	} else {
 		$hours = '';
 	}
-	if($minutes != 0) {
-		$minutes = $minutes." мин. ";
+	if ($minutes != 0) {
+		$minutes = $minutes . " мин. ";
 	} else {
 		$minutes = '';
 	}
-	if($seconds != 0) {
-		$seconds = $seconds." сек.";
+	if ($seconds != 0) {
+		$seconds = $seconds . " сек.";
 	} else {
 		$seconds = '';
 	}
-	if($type == 2) {
+	if ($type == 2) {
 		return "{$days}{$hours}{$minutes}";
 	} else {
 		return "{$days}{$hours}{$minutes}{$seconds}";
 	}
 }
 
-function diff_date($date1, $date2 = null) {
+function diff_date($date1, $date2 = null)
+{
 	$diff = array();
 
-	if(!$date2) {
+	if (!$date2) {
 		$cd = getdate();
-		$date2 = $cd['year'].'-'.$cd['mon'].'-'.$cd['mday'].' '.$cd['hours'].':'.$cd['minutes'].':'.$cd['seconds'];
+		$date2 = $cd['year'] . '-' . $cd['mon'] . '-' . $cd['mday'] . ' ' . $cd['hours'] . ':' . $cd['minutes'] . ':' . $cd['seconds'];
 	}
 
 	$pattern = '/(\d+)-(\d+)-(\d+)(\s+(\d+):(\d+):(\d+))?/';
@@ -491,10 +519,10 @@ function diff_date($date1, $date2 = null) {
 	preg_match($pattern, $date2, $matches);
 	$d2 = array((int)$matches[1], (int)$matches[2], (int)$matches[3], (int)$matches[5], (int)$matches[6], (int)$matches[7]);
 
-	for($i = 0; $i < count($d2); $i++) {
-		if($d2[$i] > $d1[$i])
+	for ($i = 0; $i < count($d2); $i++) {
+		if ($d2[$i] > $d1[$i])
 			break;
-		if($d2[$i] < $d1[$i]) {
+		if ($d2[$i] < $d1[$i]) {
 			$t = $d1;
 			$d1 = $d2;
 			$d2 = $t;
@@ -506,13 +534,13 @@ function diff_date($date1, $date2 = null) {
 	$md2 = array(31, $d2[0] % 4 || (!($d2[0] % 100) && $d2[0] % 400) ? 28 : 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 	$min_v = array(null, 1, 1, 0, 0, 0);
 	$max_v = array(null, 12, $d2[1] == 1 ? $md2[11] : $md2[$d2[1] - 2], 23, 59, 59);
-	for($i = 5; $i >= 0; $i--) {
-		if($d2[$i] < $min_v[$i]) {
+	for ($i = 5; $i >= 0; $i--) {
+		if ($d2[$i] < $min_v[$i]) {
 			$d2[$i - 1]--;
 			$d2[$i] = $max_v[$i];
 		}
 		$diff[$i] = $d2[$i] - $d1[$i];
-		if($diff[$i] < 0) {
+		if ($diff[$i] < 0) {
 			$d2[$i - 1]--;
 			$i == 2 ? $diff[$i] += $md1[$d1[1] - 1] : $diff[$i] += $max_v[$i] - $min_v[$i] + 1;
 		}
@@ -521,129 +549,138 @@ function diff_date($date1, $date2 = null) {
 	return $diff;
 }
 
-function getPhrase($number, $titles) {
+function getPhrase($number, $titles)
+{
 	$cases = array(2, 0, 1, 1, 1, 2);
 
 	return $titles[($number % 100 > 4 && $number % 100 < 20) ? 2 : $cases[min($number % 10, 5)]];
 }
 
-function translit($url) {
-	$transsimvol = array("А" => "a",
-	                     "Б" => "b",
-	                     "В" => "v",
-	                     "Г" => "g",
-	                     "Д" => "d",
-	                     "Е" => "e",
-	                     "Ж" => "zh",
-	                     "З" => "z",
-	                     "И" => "i",
-	                     "Й" => "y",
-	                     "К" => "k",
-	                     "Л" => "l",
-	                     "М" => "m",
-	                     "Н" => "n",
-	                     "О" => "o",
-	                     "П" => "p",
-	                     "Р" => "r",
-	                     "С" => "s",
-	                     "Т" => "t",
-	                     "У" => "u",
-	                     "Ф" => "f",
-	                     "Х" => "h",
-	                     "Ц" => "ts",
-	                     "Ч" => "ch",
-	                     "Ш" => "sh",
-	                     "Щ" => "sch",
-	                     "Ъ" => "",
-	                     "Ы" => "y",
-	                     "Ь" => "",
-	                     "Э" => "e",
-	                     "Ю" => "yu",
-	                     "Я" => "ya",
-	                     " " => "_",
-	                     "а" => "a",
-	                     "б" => "b",
-	                     "в" => "v",
-	                     "г" => "g",
-	                     "д" => "d",
-	                     "е" => "e",
-	                     "ж" => "j",
-	                     "з" => "z",
-	                     "и" => "i",
-	                     "й" => "y",
-	                     "к" => "k",
-	                     "л" => "l",
-	                     "м" => "m",
-	                     "н" => "n",
-	                     "о" => "o",
-	                     "п" => "p",
-	                     "р" => "r",
-	                     "с" => "s",
-	                     "т" => "t",
-	                     "у" => "u",
-	                     "ф" => "f",
-	                     "х" => "h",
-	                     "ц" => "ts",
-	                     "ч" => "ch",
-	                     "ш" => "sh",
-	                     "щ" => "sch",
-	                     "ъ" => "",
-	                     "ы" => "y",
-	                     "ь" => "",
-	                     "э" => "e",
-	                     "ю" => "yu",
-	                     "я" => "ya");
+function translit($url)
+{
+	$transsimvol = array(
+		"А" => "a",
+		"Б" => "b",
+		"В" => "v",
+		"Г" => "g",
+		"Д" => "d",
+		"Е" => "e",
+		"Ж" => "zh",
+		"З" => "z",
+		"И" => "i",
+		"Й" => "y",
+		"К" => "k",
+		"Л" => "l",
+		"М" => "m",
+		"Н" => "n",
+		"О" => "o",
+		"П" => "p",
+		"Р" => "r",
+		"С" => "s",
+		"Т" => "t",
+		"У" => "u",
+		"Ф" => "f",
+		"Х" => "h",
+		"Ц" => "ts",
+		"Ч" => "ch",
+		"Ш" => "sh",
+		"Щ" => "sch",
+		"Ъ" => "",
+		"Ы" => "y",
+		"Ь" => "",
+		"Э" => "e",
+		"Ю" => "yu",
+		"Я" => "ya",
+		" " => "_",
+		"а" => "a",
+		"б" => "b",
+		"в" => "v",
+		"г" => "g",
+		"д" => "d",
+		"е" => "e",
+		"ж" => "j",
+		"з" => "z",
+		"и" => "i",
+		"й" => "y",
+		"к" => "k",
+		"л" => "l",
+		"м" => "m",
+		"н" => "n",
+		"о" => "o",
+		"п" => "p",
+		"р" => "r",
+		"с" => "s",
+		"т" => "t",
+		"у" => "u",
+		"ф" => "f",
+		"х" => "h",
+		"ц" => "ts",
+		"ч" => "ch",
+		"ш" => "sh",
+		"щ" => "sch",
+		"ъ" => "",
+		"ы" => "y",
+		"ь" => "",
+		"э" => "e",
+		"ю" => "yu",
+		"я" => "ya"
+	);
 	return strtr($url, $transsimvol);
 }
 
-function get_file_name() {
+function get_file_name()
+{
 	$filename = substr(basename($_SERVER['PHP_SELF']), 0, strrpos(basename($_SERVER['PHP_SELF']), '.'));
 	return $filename;
 }
 
-function get_ip() {
-	$serverVars = array("HTTP_X_FORWARDED_FOR",
-	                    "HTTP_X_FORWARDED",
-	                    "HTTP_FORWARDED_FOR",
-	                    "HTTP_FORWARDED",
-	                    "HTTP_VIA",
-	                    "HTTP_X_COMING_FROM",
-	                    "HTTP_COMING_FROM",
-	                    "HTTP_CLIENT_IP",
-	                    "HTTP_XROXY_CONNECTION",
-	                    "HTTP_PROXY_CONNECTION",
-	                    "HTTP_USERAGENT_VIA");
-	foreach($serverVars as $serverVar) {
-		if(!empty($_SERVER) && !empty($_SERVER[$serverVar])) {
+function get_ip()
+{
+	$serverVars = array(
+		"HTTP_X_FORWARDED_FOR",
+		"HTTP_X_FORWARDED",
+		"HTTP_FORWARDED_FOR",
+		"HTTP_FORWARDED",
+		"HTTP_VIA",
+		"HTTP_X_COMING_FROM",
+		"HTTP_COMING_FROM",
+		"HTTP_CLIENT_IP",
+		"HTTP_XROXY_CONNECTION",
+		"HTTP_PROXY_CONNECTION",
+		"HTTP_USERAGENT_VIA"
+	);
+	foreach ($serverVars as $serverVar) {
+		if (!empty($_SERVER) && !empty($_SERVER[$serverVar])) {
 			$proxyIP = $_SERVER[$serverVar];
-		} elseif(!empty($_ENV) && isset($_ENV[$serverVar])) {
+		} elseif (!empty($_ENV) && isset($_ENV[$serverVar])) {
 			$proxyIP = $_ENV[$serverVar];
-		} elseif(@getenv($serverVar)) {
+		} elseif (@getenv($serverVar)) {
 			$proxyIP = getenv($serverVar);
 		}
 	}
-	if(!empty($proxyIP)) {
+	if (!empty($proxyIP)) {
 		$isIP = preg_match('|^([0-9]{1,3}\.){3,3}[0-9]{1,3}|', $proxyIP, $regs);
-		if(isset($regs[0])) {
+		if (isset($regs[0])) {
 			$long = ip2long($regs[0]);
-			if($isIP && (sizeof($regs) > 0) && $long != -1 && $long !== false) {
-				if(filter_var($regs[0], FILTER_VALIDATE_IP)) {
+			if ($isIP && (sizeof($regs) > 0) && $long != -1 && $long !== false) {
+				if (filter_var($regs[0], FILTER_VALIDATE_IP)) {
 					return clean($regs[0], null);
 				}
 			}
 		}
 	}
-	if(filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP)) {
+	if (filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP)) {
 		return clean($_SERVER['REMOTE_ADDR'], null);
 	} else {
 		return '127.0.0.1';
 	}
 }
 
-function get_groups($pdo) {
+function get_groups($pdo)
+{
 	$STH = $pdo->query("SELECT * FROM users__groups");
 	$STH->setFetchMode(PDO::FETCH_OBJ);
-	while($row = $STH->fetch()) {
+	while ($row = $STH->fetch()) {
 		$users_groups[$row->id]['name'] = $row->name;
 		$users_groups[$row->id]['color'] = $row->color;
 		$users_groups[$row->id]['rights'] = $row->rights;
@@ -656,18 +693,20 @@ function get_groups($pdo) {
 	return $users_groups;
 }
 
-function users_groups() {
+function users_groups()
+{
 	global $users_groups;
 
-	if(empty($users_groups)) {
+	if (empty($users_groups)) {
 		$users_groups = get_groups(pdo());
 	}
 
 	return $users_groups;
 }
 
-function user() {
-	if(!is_auth()) {
+function user()
+{
+	if (!is_auth()) {
 		$user = null;
 	} else {
 		global $user;
@@ -676,18 +715,19 @@ function user() {
 	return $user;
 }
 
-function dell_old_users($pdo, $site_name) {
+function dell_old_users($pdo, $site_name)
+{
 	$toRemove = [];
 
 	$STH = $pdo->query("SELECT id, regdate FROM users WHERE active = '0'");
 	$STH->setFetchMode(PDO::FETCH_OBJ);
-	while($row = $STH->fetch()) {
-		if(time() - strtotime($row->regdate) > 24 * 60 * 60) {
+	while ($row = $STH->fetch()) {
+		if (time() - strtotime($row->regdate) > 24 * 60 * 60) {
 			$toRemove[] = $row->id;
 		}
 	}
 
-	foreach($toRemove as $userToRemove) {
+	foreach ($toRemove as $userToRemove) {
 		$STH = $pdo->prepare("SELECT id, login, email FROM users WHERE id=:id LIMIT 1");
 		$STH->setFetchMode(PDO::FETCH_OBJ);
 		$STH->execute([':id' => $userToRemove]);
@@ -696,49 +736,52 @@ function dell_old_users($pdo, $site_name) {
 		$pdo->exec("DELETE FROM users WHERE id='$userToRemove' LIMIT 1");
 		$pdo->exec("DELETE FROM events WHERE data_id='$userToRemove' AND type='3' LIMIT 1");
 
-		write_log("Удален пользователь c ID:".$row->id." Login:".$row->login." из-за неактивации аккаунта");
+		write_log("Удален пользователь c ID:" . $row->id . " Login:" . $row->login . " из-за неактивации аккаунта");
 		incNotifications();
 		$letter = dell_user_letter($site_name, $row->login);
 		sendmail($row->email, $letter['subject'], $letter['message'], $pdo);
 	}
 }
 
-function renderTree($path, $type, $type2 = null) {
-	if(empty($path)) {
+function renderTree($path, $type, $type2 = null)
+{
+	if (empty($path)) {
 		$path = '.';
 	}
-	if($handle = opendir($path)) {
+	if ($handle = opendir($path)) {
 
-		if($type2 == null) {
+		if ($type2 == null) {
 			$data = '<ol class="tree">';
 		}
 
-		while(false !== ($file = readdir($handle))) {
-			if(is_dir($path.$file) && $file != '.' && $file != '..')
-				$data .= printSubDir($type, $file, $path); else if($file != '.' && $file != '..')
+		while (false !== ($file = readdir($handle))) {
+			if (is_dir($path . $file) && $file != '.' && $file != '..')
+				$data .= printSubDir($type, $file, $path);
+			else if ($file != '.' && $file != '..')
 				$queue[] = $file;
 		}
 
-		if(empty($data)) {
+		if (empty($data)) {
 			$data = '';
 		}
 
-		if(!empty($queue)) {
+		if (!empty($queue)) {
 			$data .= printQueue($queue, $path, $type);
 		}
 
 
-		if($type2 == null) {
+		if ($type2 == null) {
 			$data .= "</ol>";
 		}
 	}
 	return $data;
 }
 
-function printQueue($queue, $path, $type) {
+function printQueue($queue, $path, $type)
+{
 	asort($queue);
-	foreach($queue as $file) {
-		if(empty($data)) {
+	foreach ($queue as $file) {
+		if (empty($data)) {
 			$data = '';
 		}
 		$data .= printFile($file, $path, $type);
@@ -746,35 +789,39 @@ function printQueue($queue, $path, $type) {
 	return $data;
 }
 
-function printFile($file, $path, $type) {
-	if(empty($data)) {
+function printFile($file, $path, $type)
+{
+	if (empty($data)) {
 		$data = '';
 	}
-	$data .= "<li class=\"file\"><a onclick=\"get_content_tpl('".$path.$file."', '".$type."');\" alt=\"".$path.$file."\" class=\"c-p\">$file</a></li>";
+	$data .= "<li class=\"file\"><a onclick=\"get_content_tpl('" . $path . $file . "', '" . $type . "');\" alt=\"" . $path . $file . "\" class=\"c-p\">$file</a></li>";
 	return $data;
 }
 
-function printSubDir($type, $dir, $path) {
-	if(empty($data)) {
+function printSubDir($type, $dir, $path)
+{
+	if (empty($data)) {
 		$data = '';
 	}
 	$data .= "<li class=\"toggle\">$dir<input type=\"checkbox\">";
-	$data .= renderTree($path.$dir."/", $type);
+	$data .= renderTree($path . $dir . "/", $type);
 	$data .= "</li>";
 	return $data;
 }
 
-function collect_tpl($info, $tpl) {
+function collect_tpl($info, $tpl)
+{
 	$data = $tpl;
-	for($i = 0; $i < count($info); $i++) {
-		$data = str_replace('{'.$info[$i]['name'].'}', $info[$i]['var'], $data);
+	for ($i = 0; $i < count($info); $i++) {
+		$data = str_replace('{' . $info[$i]['name'] . '}', $info[$i]['var'], $data);
 	}
 	return $data;
 }
 
-function write_sitemap($url) {
-	$file = $_SERVER['DOCUMENT_ROOT']."/sitemap.xml";
-	if(file_exists($file) and filesize($file) != 0) {
+function write_sitemap($url)
+{
+	$file = $_SERVER['DOCUMENT_ROOT'] . "/sitemap.xml";
+	if (file_exists($file) and filesize($file) != 0) {
 		$data = '';
 		$i = "a";
 		dell_last_string($file);
@@ -786,8 +833,8 @@ function write_sitemap($url) {
 
 	$date = date("Y-m-d");
 	$data .= "	<url>
-		<loc>".$url."</loc>
-		<lastmod>".$date."</lastmod>
+		<loc>" . $url . "</loc>
+		<lastmod>" . $date . "</lastmod>
 		<changefreq>always</changefreq>
 	</url>
 </urlset>";
@@ -796,13 +843,14 @@ function write_sitemap($url) {
 	fclose($log_file);
 }
 
-function dell_last_string($history_file) {
+function dell_last_string($history_file)
+{
 	$filesize = filesize($history_file);
-	if($filesize < 1) {
+	if ($filesize < 1) {
 		return false;
 	}
 
-	if($filesize < 1024) {
+	if ($filesize < 1024) {
 		$filesize = 1024;
 	}
 
@@ -810,7 +858,7 @@ function dell_last_string($history_file) {
 	fseek($fp2, $filesize - 1024);
 	$last_data = 0;
 
-	while($buffer = fgets($fp2, 1024)) {
+	while ($buffer = fgets($fp2, 1024)) {
 		$last_data = $buffer;
 	}
 
@@ -818,7 +866,7 @@ function dell_last_string($history_file) {
 	$fz = filesize($history_file);
 	$st = strlen($last_data);
 
-	if($fz == $st) {
+	if ($fz == $st) {
 		$fp2 = fopen($history_file, 'w');
 		fclose($fp2);
 		return true;
@@ -831,10 +879,11 @@ function dell_last_string($history_file) {
 	return true;
 }
 
-function getMonitoringUrl() {
+function getMonitoringUrl()
+{
 	global $config_additional;
 
-	if(
+	if (
 		!empty($config_additional)
 		&& array_key_exists('monitoring_url', $config_additional)
 	) {
@@ -852,7 +901,7 @@ function update_monitoring()
 		->query("SELECT mon_gap, mon_time, mon_api, mon_key FROM config__secondary LIMIT 1")
 		->fetch(PDO::FETCH_OBJ);
 
-	if((time() - $monitoringSettings->mon_time) > $monitoringSettings->mon_gap) {
+	if ((time() - $monitoringSettings->mon_time) > $monitoringSettings->mon_gap) {
 		pdo()
 			->prepare("UPDATE config__secondary SET mon_time =:mon_time LIMIT 1")
 			->execute(['mon_time' => time()]);
@@ -860,7 +909,8 @@ function update_monitoring()
 		pdo()->exec('TRUNCATE TABLE monitoring');
 
 		$servers = pdo()
-			->query("SELECT 
+			->query(
+				"SELECT 
 								    address,
 								    id as sid,
 								    ip,
@@ -878,23 +928,23 @@ function update_monitoring()
 			)
 			->fetchAll(PDO::FETCH_ASSOC);
 
-		if($monitoringSettings->mon_api == 1) {
+		if ($monitoringSettings->mon_api == 1) {
 			$serversForRequest = [];
 
-			foreach($servers as $server) {
+			foreach ($servers as $server) {
 				$serversForRequest[] = ['ip' => $server['ip'], 'port' => $server['port']];
 			}
 
 			$serversInfo = @file_get_contents(
 				getMonitoringUrl() . 'servers-info.php?key=' . $monitoringSettings->mon_key
-				. '&servers=' . serialize($serversForRequest)
-				. '&version=2'
+					. '&servers=' . serialize($serversForRequest)
+					. '&version=2'
 			);
 
-			if($serversInfo != '403') {
+			if ($serversInfo != '403') {
 				$serversInfo = unserialize($serversInfo);
 
-				foreach($serversInfo as $key => $server) {
+				foreach ($serversInfo as $key => $server) {
 					$servers[$key]['name'] = $server['name'];
 					$servers[$key]['map'] = $server['map'];
 					$servers[$key]['players_max'] = $server['max'];
@@ -902,7 +952,7 @@ function update_monitoring()
 				}
 			}
 		} else {
-			foreach($servers as $key => $server) {
+			foreach ($servers as $key => $server) {
 				try {
 					$SourceQuery = new SourceQuery;
 					$SourceQuery->Connect($server['ip'], $server['port']);
@@ -914,18 +964,17 @@ function update_monitoring()
 					$servers[$key]['map'] = $serverInfo['Map'];
 					$servers[$key]['players_max'] = $serverInfo['MaxPlayers'];
 					$servers[$key]['players_now'] = $serverInfo['Players'];
-				} catch(Exception $e) {
-
+				} catch (Exception $e) {
 				}
 			}
 		}
 
-		foreach($servers as $key => $server) {
+		foreach ($servers as $key => $server) {
 			$servers[$key]['name'] = mb_convert_encoding(empty($server['name']) ? 0 : $server['name'], 'UTF-8');
 			$servers[$key]['players_max'] = empty($server['players_max']) ? 0 : check($server['players_max'], 'int');
 			$servers[$key]['players_now'] = empty($server['players_now']) ? 0 : check($server['players_now'], 'int');
 
-			if(empty($server['map'])) {
+			if (empty($server['map'])) {
 				$servers[$key]['map'] = 0;
 			} else {
 				$mapParts = explode('/', $server['map']);
@@ -941,7 +990,7 @@ function update_monitoring()
 
 function createDirectory($path)
 {
-	if(is_dir($path)) {
+	if (is_dir($path)) {
 		return true;
 	}
 
@@ -953,36 +1002,38 @@ function createDirectory($path)
 		: false;
 }
 
-function removeDirectory($dir, $remove_dir = 1) {
-	if($objs = glob($dir."/*")) {
-		foreach($objs as $obj) {
+function removeDirectory($dir, $remove_dir = 1)
+{
+	if ($objs = glob($dir . "/*")) {
+		foreach ($objs as $obj) {
 			is_dir($obj) ? removeDirectory($obj) : unlink($obj);
 		}
 	}
-	if($remove_dir == 1) {
-		if($objs = glob($dir."/.htaccess")) {
-			foreach($objs as $obj) {
+	if ($remove_dir == 1) {
+		if ($objs = glob($dir . "/.htaccess")) {
+			foreach ($objs as $obj) {
 				is_dir($obj) ? removeDirectory($obj) : unlink($obj);
 			}
 		}
 	}
-	if($objs = glob($dir."/.eslintrc")) {
-		foreach($objs as $obj) {
+	if ($objs = glob($dir . "/.eslintrc")) {
+		foreach ($objs as $obj) {
 			is_dir($obj) ? removeDirectory($obj) : unlink($obj);
 		}
 	}
-	if($objs = glob($dir."/*")) {
-		foreach($objs as $obj) {
+	if ($objs = glob($dir . "/*")) {
+		foreach ($objs as $obj) {
 			is_dir($obj) ? removeDirectory($obj) : unlink($obj);
 		}
 	}
-	if($remove_dir == 1) {
+	if ($remove_dir == 1) {
 		rmdir($dir);
 	}
 	return true;
 }
 
-function strip_data($text) {
+function strip_data($text)
+{
 	$quotes = array("\x27", "\x22", "\x60", "\t", "\n", "\r", "%");
 	$goodquotes = array("-", "+", "#");
 	$repquotes = array("\-", "\+", "\#");
@@ -994,37 +1045,40 @@ function strip_data($text) {
 	return $text;
 }
 
-function sendmail($mail_to, $subject, $message, $pdo, $type = 0, $debug = 0) {
+function sendmail($mail_to, $subject, $message, $pdo, $type = 0, $debug = 0)
+{
 	try {
-		if($type == 1 and $mail_to == 'none') {
+		if ($type == 1 and $mail_to == 'none') {
 			$STH = $pdo->query("SELECT `admins_ids` FROM `config__secondary` LIMIT 1");
 			$STH->setFetchMode(PDO::FETCH_OBJ);
 			$row = $STH->fetch();
 			$user_ids = explode(",", $row->admins_ids);
 			$ids_count = count($user_ids);
-			for($i = 0; $i < $ids_count; $i++) {
+			for ($i = 0; $i < $ids_count; $i++) {
 				$STH = $pdo->prepare("SELECT `email`, `email_notice` FROM `users` WHERE `id`=:id LIMIT 1");
 				$STH->setFetchMode(PDO::FETCH_OBJ);
 				$STH->execute(array(':id' => $user_ids[$i]));
 				$row = $STH->fetch();
-				if($row->email_notice == 1) {
+				if ($row->email_notice == 1) {
 					sendmail($row->email, $subject, $message, $pdo);
 				}
 			}
 		} else {
-			if(isEmailIntroduced($mail_to)) {
+			if (isEmailIntroduced($mail_to)) {
 				$STH = $pdo->query("SELECT * FROM config__email LIMIT 1");
 				$STH->setFetchMode(PDO::FETCH_OBJ);
 				$email_conf = $STH->fetch();
 				$message = str_replace("\n", '<br>', $message);
-				if($email_conf->use_email == 2) {
+				if ($email_conf->use_email == 2) {
 					mail($mail_to, $subject, $message, "Content-type: text/html; charset=utf8 \r\n");
 				} else {
 					$mail = new phpmailer(true);
-					if($email_conf->verify_peers == 2) {
-						$mail->SMTPOptions = array('ssl' => array('verify_peer'       => false,
-						                                          'verify_peer_name'  => false,
-						                                          'allow_self_signed' => true));
+					if ($email_conf->verify_peers == 2) {
+						$mail->SMTPOptions = array('ssl' => array(
+							'verify_peer'       => false,
+							'verify_peer_name'  => false,
+							'allow_self_signed' => true
+						));
 					}
 					$mail->IsSMTP();
 					$mail->Host = $email_conf->host;
@@ -1045,22 +1099,23 @@ function sendmail($mail_to, $subject, $message, $pdo, $type = 0, $debug = 0) {
 				}
 			}
 		}
-	} catch(Exception $exception) {
+	} catch (Exception $exception) {
 		error_log('Ошибка отправки e-mail уведомления: ' . $exception->getMessage());
 	}
 }
 
-function up_online($pdo) {
-	if(isset($_COOKIE['id'])) {
+function up_online($pdo)
+{
+	if (isset($_COOKIE['id'])) {
 		$_SESSION['id'] = clean($_COOKIE['id'], "int");
 	}
 
 	$time = time();
-	if(is_auth()) {
+	if (is_auth()) {
 		$STH = $pdo->query("SELECT `id` FROM `users__online` WHERE `user_id`='$_SESSION[id]' LIMIT 1");
 		$STH->setFetchMode(PDO::FETCH_OBJ);
 		$tmp = $STH->fetch();
-		if(empty($tmp->id)) {
+		if (empty($tmp->id)) {
 			$STH = $pdo->prepare("INSERT INTO `users__online` (`user_id`,`time`) values (:user_id, :time)");
 			$STH->execute(array('user_id' => $_SESSION['id'], 'time' => $time));
 		} else {
@@ -1070,31 +1125,32 @@ function up_online($pdo) {
 	}
 }
 
-function show_error_page($error_type = '404') {
+function show_error_page($error_type = '404')
+{
 	global $messages;
 	global $PI;
 	global $full_site_host;
 
-	if($error_type == '404') {
+	if ($error_type == '404') {
 		$_SESSION['error_msg'] = $messages['404'];
-		foreach($GLOBALS as $key => $val) {
+		foreach ($GLOBALS as $key => $val) {
 			global $$key;
 		}
 		$page      = $PI->page_info('error_page');
 		tpl()->dir = $_SERVER['DOCUMENT_ROOT'] . '/templates/' . configs()->template . '/tpl/';
 		include_once $_SERVER['DOCUMENT_ROOT'] . '/modules/error/index.php';
 		exit();
-	} elseif($error_type == 'not_auth') {
+	} elseif ($error_type == 'not_auth') {
 		$_SESSION['error_msg'] = $messages['Not_auth'];
-	} elseif($error_type == 'not_adm') {
+	} elseif ($error_type == 'not_adm') {
 		$_SESSION['error_msg'] = $messages['Not_adm'];
-	} elseif($error_type == 'not_allowed') {
+	} elseif ($error_type == 'not_allowed') {
 		$_SESSION['error_msg'] = $messages['Not_allowed'];
-	} elseif($error_type == 'not_settings') {
+	} elseif ($error_type == 'not_settings') {
 		$_SESSION['error_msg'] = $messages['Not_settings'];
-	} elseif($error_type == 'wrong_url') {
+	} elseif ($error_type == 'wrong_url') {
 		$_SESSION['error_msg'] = $messages['Wrong_url'];
-	} elseif($error_type == 'servers_not_configured') {
+	} elseif ($error_type == 'servers_not_configured') {
 		$_SESSION['error_msg'] = $messages['Servers_not_configured'];
 	} else {
 		$_SESSION['error_msg'] = clean($error_type);
@@ -1105,82 +1161,86 @@ function show_error_page($error_type = '404') {
 	exit();
 }
 
-function check_img($matches) {
-	if(@exif_imagetype(trim($matches[0])) == false) {
+function check_img($matches)
+{
+	if (@exif_imagetype(trim($matches[0])) == false) {
 		return $matches[0];
 	} else {
-		return ('<br><a href="'.$matches[0].'" class="thumbnail" data-lightbox="'.mt_rand(0, 100).'"><img src="'.$matches[0].'" class="thumbnail-img" alt=""></a><br>');
+		return ('<br><a href="' . $matches[0] . '" class="thumbnail" data-lightbox="' . mt_rand(0, 100) . '"><img src="' . $matches[0] . '" class="thumbnail-img" alt=""></a><br>');
 	}
 }
 
-function find_img_mp3($text, $id, $not_img = 0) {
+function find_img_mp3($text, $id, $not_img = 0)
+{
 	$ok = 0;
 	$length = mb_strlen($text, 'UTF-8');
-	if($length > 17) {
+	if ($length > 17) {
 		$col = substr_count($text, ' ');
-		if($col == 0) {
+		if ($col == 0) {
 			$http = substr($text, 0, 7);
 			//$ras = substr($text, $length - 4, $length);
-			if($http == 'sticker') {
-				if(substr(substr($text, 7), 0, 18) != '../files/stickers/') {
+			if ($http == 'sticker') {
+				if (substr(substr($text, 7), 0, 18) != '../files/stickers/') {
 					$text = check($text, null);
 				} else {
-					$text = '<img class="g_sticker" src="'.substr($text, 7).'">';
+					$text = '<img class="g_sticker" src="' . substr($text, 7) . '">';
 				}
 				$ok = 1;
 			}
 		}
-		if($ok != 1) {
-			if(preg_match('#(http://[^\s]+(?=\.(mp3|mp4)))#i', $text)) {
+		if ($ok != 1) {
+			if (preg_match('#(http://[^\s]+(?=\.(mp3|mp4)))#i', $text)) {
 				//$val = mt_rand(0, 100);
 				$text = preg_replace('#(http://[^\s]+(?=\.(mp3|mp4)))(\.(mp3|mp4))#i', '<audio src="$1.$2" controls="controls">Аудио файл: $1.$2</audio>', $text);
 			}
-			if($not_img == 0) {
-				if(preg_match('#((http|https)://[^\s]+(?=\.(jpe?g|png|gif|bmp)))#i', $text)) {
+			if ($not_img == 0) {
+				if (preg_match('#((http|https)://[^\s]+(?=\.(jpe?g|png|gif|bmp)))#i', $text)) {
 					$text = preg_replace_callback('#((http|https)://[^\s]+(?=\.(jpe?g|png|gif|bmp)))(\.(jpe?g|png|gif))#i', "check_img", $text);
 				}
 				$text = preg_replace("/(^|[\n ])([\w]*?)((ht|f)tp(s)?:\/\/[\w]+[^ \,\"\n\r\t<]*)/is", "$1$2<span class=\"m-icon icon-link\"></span><a href=\"$3\" target=\"_blank\" title=\"Мы не несем ответственности за ресурс, на который направлена ссылка\">$3</a>", $text);
 				$text = preg_replace("/(^|[\n ])([\w]*?)((www|ftp)\.[^ \,\"\t\n\r<]*)/is", "$1$2<span class=\"m-icon icon-link\"></span><a href=\"http://$3\" target=\"_blank\" title=\"Мы не несем ответственности за ресурс, на который направлена ссылка\">$3</a>", $text);
-				if(preg_match("/(http|https):\/\/(www.youtube|youtube|youtu)\.(be|com)\/([^<\s]*)/", $text, $match)) {
-					if(preg_match('/youtube\.com\/watch\?v=([^\&\?\/]+)/', $text, $id)) {
+				if (preg_match("/(http|https):\/\/(www.youtube|youtube|youtu)\.(be|com)\/([^<\s]*)/", $text, $match)) {
+					if (preg_match('/youtube\.com\/watch\?v=([^\&\?\/]+)/', $text, $id)) {
 						$values = $id[1];
-					} else if(preg_match('/youtube\.com\/embed\/([^\&\?\/]+)/', $text, $id)) {
+					} else if (preg_match('/youtube\.com\/embed\/([^\&\?\/]+)/', $text, $id)) {
 						$values = $id[1];
-					} else if(preg_match('/youtube\.com\/v\/([^\&\?\/]+)/', $text, $id)) {
+					} else if (preg_match('/youtube\.com\/v\/([^\&\?\/]+)/', $text, $id)) {
 						$values = $id[1];
-					} else if(preg_match('/youtu\.be\/([^\&\?\/]+)/', $text, $id)) {
+					} else if (preg_match('/youtu\.be\/([^\&\?\/]+)/', $text, $id)) {
 						$values = $id[1];
-					} else if(preg_match('/youtube\.com\/verify_age\?next_url=\/watch%3Fv%3D([^\&\?\/]+)/', $text, $id)) {
+					} else if (preg_match('/youtube\.com\/verify_age\?next_url=\/watch%3Fv%3D([^\&\?\/]+)/', $text, $id)) {
 						$values = $id[1];
 					}
-					$text = '<iframe width="400" height="200" src="https://www.youtube.com/embed/'.$values.'" frameborder="0" allowfullscreen></iframe>';
+					$text = '<iframe width="400" height="200" src="https://www.youtube.com/embed/' . $values . '" frameborder="0" allowfullscreen></iframe>';
 				}
 			}
 		}
 	}
-	if($ok != 1) {
+	if ($ok != 1) {
 		$smiles_key = array();
-		for($i = 0; $i < 63; $i++) {
+		for ($i = 0; $i < 63; $i++) {
 			$j = $i + 1;
-			if($j < 10) {
-				$j = "0".$j;
+			if ($j < 10) {
+				$j = "0" . $j;
 			}
-			$smiles_key[$i] = ":smile".$j.":";
+			$smiles_key[$i] = ":smile" . $j . ":";
 		}
-		for($i = 1; $i <= count($smiles_key); $i++) {
-			$smiles_value[$i] = "<img class='g_smile' src='../files/smiles/".$i.".png'>";
+		for ($i = 1; $i <= count($smiles_key); $i++) {
+			$smiles_value[$i] = "<img class='g_smile' src='../files/smiles/" . $i . ".png'>";
 		}
 		$text = str_replace($smiles_key, $smiles_value, $text);
 	}
 	return $text;
 }
 
-function clean_str($str) {
+function clean_str($str)
+{
 	return preg_replace('/[^a-zA-Zа-яёЁА-Я0-9._ ]/ui', '', $str);
 }
 
-function clean_from_php($data) {
-	if(ifSafeMode()) {
+function clean_from_php($data)
+{
+	if (ifSafeMode()) {
 		$data = preg_replace('/<(\?php|\?)(.*?)\?>/is', '', $data);
 		$data = preg_replace('/<(\?php|\?)/is', '', $data);
 	}
@@ -1188,9 +1248,10 @@ function clean_from_php($data) {
 	return $data;
 }
 
-function check_for_php($data) {
-	if(ifSafeMode()) {
-		if(preg_match('/<(\?php|\?).*?\?>/is', $data) || stristr($data, '<?php') !== false || stristr($data, '<?') !== false) {
+function check_for_php($data)
+{
+	if (ifSafeMode()) {
+		if (preg_match('/<(\?php|\?).*?\?>/is', $data) || stristr($data, '<?php') !== false || stristr($data, '<?') !== false) {
 			return true;
 		} else {
 			return false;
@@ -1200,22 +1261,24 @@ function check_for_php($data) {
 	}
 }
 
-function ifSafeMode() {
+function ifSafeMode()
+{
 	global $safe_mode;
 
-	if($safe_mode == 1) {
+	if ($safe_mode == 1) {
 		return true;
 	} else {
 		return false;
 	}
 }
 
-function magic_quotes($data) {
+function magic_quotes($data)
+{
 	$phpVersion = getPhpVersion();
 	$phpVersion = $phpVersion[0] + $phpVersion[1] * 0.1;
 
-	if($phpVersion > 5 && $phpVersion < 7.4) {
-		if(
+	if ($phpVersion > 5 && $phpVersion < 7.4) {
+		if (
 			function_exists('get_magic_quotes_gpc')
 			&& get_magic_quotes_gpc()
 		) {
@@ -1226,89 +1289,95 @@ function magic_quotes($data) {
 	return $data;
 }
 
-function crate_pass($max, $type) {
-	if($type == 1) {
+function crate_pass($max, $type)
+{
+	if ($type == 1) {
 		$chars = "qazxswedcvfrtgbnhyujmkiolp1234567890QAZXSWEDCVFRTGBNHYUJMKIOLP";
-	} elseif($type == 2) {
+	} elseif ($type == 2) {
 		$chars = "1234567890QAZXSWEDCVFRTGBNHYUJMKIOLP";
 	}
 	$size = StrLen($chars) - 1;
 	$password = null;
-	while($max--)
+	while ($max--)
 		$password .= $chars[rand(0, $size)];
 
 	return $password;
 }
 
-function calculate_size($size) {
-	if($size > 1024) {
+function calculate_size($size)
+{
+	if ($size > 1024) {
 		$size = round($size / 1024, 2);
 		$ed = "Кбайт";
-		if($size > 1024) {
+		if ($size > 1024) {
 			$size = round($size / 1024, 2);
 			$ed = "Мбайт";
 		}
 	} else {
 		$ed = "байт";
 	}
-	return $size.' '.$ed;
+	return $size . ' ' . $ed;
 }
 
-function code_str($str, $password = "") {
+function code_str($str, $password = "")
+{
 	$salt = "2f53g648";
 	$len = strlen($str);
 	$gamma = '';
 	$n = $len > 100 ? 8 : 2;
-	while(strlen($gamma) < $len) {
-		$gamma .= substr(pack('H*', sha1($password.$gamma.$salt)), 0, $n);
+	while (strlen($gamma) < $len) {
+		$gamma .= substr(pack('H*', sha1($password . $gamma . $salt)), 0, $n);
 	}
 	return $str ^ $gamma;
 }
 
-function exec_script($url, $params = array()) {
+function exec_script($url, $params = array())
+{
 	$parts = parse_url($url);
 
-	if(!$fp = fsockopen($parts['host'], isset($parts['port']) ? $parts['port'] : 80)) {
+	if (!$fp = fsockopen($parts['host'], isset($parts['port']) ? $parts['port'] : 80)) {
 		return false;
 	}
 
 	$data = http_build_query($params, '', '&');
 
-	fwrite($fp, "POST ".(!empty($parts['path']) ? $parts['path'] : '/')." HTTP/1.1\r\n");
-	fwrite($fp, "Host: ".$parts['host']."\r\n");
+	fwrite($fp, "POST " . (!empty($parts['path']) ? $parts['path'] : '/') . " HTTP/1.1\r\n");
+	fwrite($fp, "Host: " . $parts['host'] . "\r\n");
 	fwrite($fp, "Content-Type: application/x-www-form-urlencoded\r\n");
-	fwrite($fp, "Content-Length: ".strlen($data)."\r\n");
+	fwrite($fp, "Content-Length: " . strlen($data) . "\r\n");
 	fwrite($fp, "Connection: Close\r\n\r\n");
 	fwrite($fp, $data);
-	while(!feof($fp))
+	while (!feof($fp))
 		$answer = fgets($fp, 1000);
 	fclose($fp);
 
 	return $answer;
 }
 
-function get_ban_admin_nick($admin_nick, $admin_nick2, $server_name, $type) {
-	if(!empty($admin_nick2)) {
+function get_ban_admin_nick($admin_nick, $admin_nick2, $server_name, $type)
+{
+	if (!empty($admin_nick2)) {
 		$admin_nick = $admin_nick2;
-	} elseif(empty($admin_nick)) {
+	} elseif (empty($admin_nick)) {
 		$admin_nick = $server_name;
 	}
-	if($type == '2' || $type == '3' || $type == '5') {
+	if ($type == '2' || $type == '3' || $type == '5') {
 		$admin_nick = htmlspecialchars_decode($admin_nick);
 	}
 	return $admin_nick;
 }
 
-function copy_files($source, $res) {
+function copy_files($source, $res)
+{
 	$hendle = opendir($source);
-	while($file = readdir($hendle)) {
-		if(($file != ".") && ($file != "..")) {
-			if(is_dir($source."/".$file) == true) {
-				if(is_dir($res."/".$file) != true)
-					mkdir($res."/".$file, 0777);
-				copy_files($source."/".$file, $res."/".$file);
+	while ($file = readdir($hendle)) {
+		if (($file != ".") && ($file != "..")) {
+			if (is_dir($source . "/" . $file) == true) {
+				if (is_dir($res . "/" . $file) != true)
+					mkdir($res . "/" . $file, 0777);
+				copy_files($source . "/" . $file, $res . "/" . $file);
 			} else {
-				if(!copy($source."/".$file, $res."/".$file)) {
+				if (!copy($source . "/" . $file, $res . "/" . $file)) {
 					log_error("An error occurred while copying the file: $file\n");
 				}
 			}
@@ -1317,16 +1386,18 @@ function copy_files($source, $res) {
 	closedir($hendle);
 }
 
-function collect_reit($thanks, $answers) {
+function collect_reit($thanks, $answers)
+{
 	//thanks - количество спасибок
 	//answers - количество ответов
 	$reit = $thanks * 5 + $answers;
 	return $reit;
 }
 
-function check_remote_file($file, $timeOut = null) {
+function check_remote_file($file, $timeOut = null)
+{
 
-	if(!is_null($timeOut)) {
+	if (!is_null($timeOut)) {
 		$default = stream_context_get_options(stream_context_get_default());
 		stream_context_set_default(
 			[
@@ -1339,7 +1410,7 @@ function check_remote_file($file, $timeOut = null) {
 
 	$headers = @get_headers($file, true);
 
-	if(
+	if (
 		!empty($headers)
 		&& is_array($headers)
 		&& strpos($headers[0], '200')
@@ -1349,7 +1420,7 @@ function check_remote_file($file, $timeOut = null) {
 		$result = false;
 	}
 
-	if(isset($default)) {
+	if (isset($default)) {
 		stream_context_set_default($default);
 	}
 
@@ -1358,21 +1429,22 @@ function check_remote_file($file, $timeOut = null) {
 
 function get_log_file_name($name)
 {
-	if($name == 'stat') {
+	if ($name == 'stat') {
 		return "stat.log";
 	} else {
 		return $name . '_' . md5(configs()->secret) . '.log';
 	}
 }
 
-function get_log_file($file) {
-	if(file_exists($file)) {
-		if(filesize($file) > 1 * 1024 * 1024) {
-			$rename = substr($file, 0, -4)."_".date("Y-m-d_H-i-s").".log";
+function get_log_file($file)
+{
+	if (file_exists($file)) {
+		if (filesize($file) > 1 * 1024 * 1024) {
+			$rename = substr($file, 0, -4) . "_" . date("Y-m-d_H-i-s") . ".log";
 			rename($file, $rename);
 
 			$log_file = fopen($file, "w");
-			fwrite($log_file, "[".date("Y-m-d H:i:s")." ] : [Создан новый лог, прошлый переименован в ".$rename."] \r\n");
+			fwrite($log_file, "[" . date("Y-m-d H:i:s") . " ] : [Создан новый лог, прошлый переименован в " . $rename . "] \r\n");
 			fclose($log_file);
 		}
 		$log = file_get_contents($file);
@@ -1388,32 +1460,33 @@ function get_log_file($file) {
 	return $log;
 }
 
-function get_active($val, $type, $type2 = 1) {
-	if($type2 == 1) {
+function get_active($val, $type, $type2 = 1)
+{
+	if ($type2 == 1) {
 		$name = 'active';
 	} else {
 		$name = 'selected';
 	}
-	if($type == 1) {
-		if($val == 1) {
+	if ($type == 1) {
+		if ($val == 1) {
 			$array = array($name, '');
-		} elseif($val == 0) {
+		} elseif ($val == 0) {
 			$array = array('', $name);
 		}
-	} elseif($type == 2) {
-		if($val == 1) {
+	} elseif ($type == 2) {
+		if ($val == 1) {
 			$array = array($name, '');
-		} elseif($val == 2) {
+		} elseif ($val == 2) {
 			$array = array('', $name);
 		}
-	} elseif($type == 3) {
-		if($val == 0) {
+	} elseif ($type == 3) {
+		if ($val == 0) {
 			$array = array('', $name, 0);
 		} else {
 			$array = array($name, '', $val);
 		}
-	} elseif($type == 4) {
-		if($val == 2) {
+	} elseif ($type == 4) {
+		if ($val == 2) {
 			$array = array('', $name, '');
 		} else {
 			$array = array($name, '', $val);
@@ -1422,77 +1495,83 @@ function get_active($val, $type, $type2 = 1) {
 	return $array;
 }
 
-function file_get_contents_curl($url) {
+function file_get_contents_curl($url)
+{
 	$url = str_replace("&amp;", "&", $url);
 	return @file_get_contents($url);
 }
 
-function get_procent($val1, $val2) {
-	if($val1 > 0) {
+function get_procent($val1, $val2)
+{
+	if ($val1 > 0) {
 		return round(number_format($val2 / $val1, 2));
 	} else {
 		return 0;
 	}
 }
 
-function str_replace_once($search, $replace, $text) {
+function str_replace_once($search, $replace, $text)
+{
 	$pos = strpos($text, $search);
 	return $pos !== false ? substr_replace($text, $replace, $pos, strlen($search)) : $text;
 }
 
-function calculate_discount($server, $global, $user, $service = 0, $tarif = 0) {
-	if(empty($server)) {
+function calculate_discount($server, $global, $user, $service = 0, $tarif = 0)
+{
+	if (empty($server)) {
 		$server = 0;
 	}
-	if(empty($global)) {
+	if (empty($global)) {
 		$global = 0;
 	}
-	if(empty($user)) {
+	if (empty($user)) {
 		$user = 0;
 	}
 
-	if($tarif != 0) {
-		if($tarif > $user) {
+	if ($tarif != 0) {
+		if ($tarif > $user) {
 			return $tarif;
 		} else {
 			return $user;
 		}
-	} elseif($service != 0) {
-		if($service > $user) {
+	} elseif ($service != 0) {
+		if ($service > $user) {
 			return $service;
 		} else {
 			return $user;
 		}
-	} elseif($server != 0) {
-		if($server > $user) {
+	} elseif ($server != 0) {
+		if ($server > $user) {
 			return $server;
 		} else {
 			return $user;
 		}
-	} elseif($global != 0) {
-		if($global > $user) {
+	} elseif ($global != 0) {
+		if ($global > $user) {
 			return $global;
 		} else {
 			return $user;
 		}
-	} elseif($user != 0) {
+	} elseif ($user != 0) {
 		return $user;
 	} else {
 		return 0;
 	}
 }
 
-function calculate_price($price, $discount) {
+function calculate_price($price, $discount)
+{
 	$temp = $price - $price * $discount / 100;
-	if($temp == $price) {
+	if ($temp == $price) {
 		return $price;
 	} else {
 		return round($temp, 2);
 	}
 }
 
-function calculate_return($price, $time) {
-	if($time != 0) {
+function calculate_return($price, $time)
+{
+	if ($time != 0) {
 		$temp = $price / $time;
 		return round($temp, 2);
 	} else {
@@ -1500,41 +1579,43 @@ function calculate_return($price, $time) {
 	}
 }
 
-function round_shilings($shilings = 0) {
-	if(empty($shilings)) {
+function round_shilings($shilings = 0)
+{
+	if (empty($shilings)) {
 		return 0;
 	} else {
 		return round($shilings, 2);
 	}
 }
 
-function collect_consumption_str($kind, $type, $class, $name, $pdo = null, $user_id = 0) {
-	if($user_id != 0) {
+function collect_consumption_str($kind, $type, $class, $name, $pdo = null, $user_id = 0)
+{
+	if ($user_id != 0) {
 		$STH = $pdo->prepare("SELECT `login` FROM `users` WHERE `id`=:id LIMIT 1");
 		$STH->setFetchMode(PDO::FETCH_OBJ);
 		$STH->execute(array(':id' => $user_id));
 		$row = $STH->fetch();
-		if(!empty($row->login)) {
+		if (!empty($row->login)) {
 			$login = $row->login;
 		}
 	}
-	if(empty($row->login) || $user_id == 0) {
+	if (empty($row->login) || $user_id == 0) {
 		$login = 'unnamed';
 	}
 
 	$result = '';
-	if($kind == 1) {
-		$result = '<p class="text-'.$class.'">'.$name.'</p>';
-	} elseif($kind == 2) {
-		if($type == 1) {
-			$result = '<b><p class="text-success">'.$name.'</p></b>';
-		} elseif($type == 3) {
-			$result = '<p class="text-danger">'.$name.'</p>';
+	if ($kind == 1) {
+		$result = '<p class="text-' . $class . '">' . $name . '</p>';
+	} elseif ($kind == 2) {
+		if ($type == 1) {
+			$result = '<b><p class="text-success">' . $name . '</p></b>';
+		} elseif ($type == 3) {
+			$result = '<p class="text-danger">' . $name . '</p>';
 		} else {
-			$result = '<p>'.$name.'</p>';
+			$result = '<p>' . $name . '</p>';
 		}
 	}
-	if($type == 3 || $type == 11) {
+	if ($type == 3 || $type == 11) {
 		$result = str_replace("{id}", $user_id, $result);
 		$result = str_replace("{login}", $login, $result);
 	}
@@ -1542,166 +1623,183 @@ function collect_consumption_str($kind, $type, $class, $name, $pdo = null, $user
 	return $result;
 }
 
-function clip_image($im, $size, $file_path) {
-	if(empty($size)) {
+function clip_image($im, $size, $file_path)
+{
+	if (empty($size)) {
 		$size = 300;
 	}
 	$w = $size;
 	$w_src = imagesx($im);
 	$h_src = imagesy($im);
 	$dest = imagecreatetruecolor($w, $w);
-	if($w_src > $h_src) {
+	if ($w_src > $h_src) {
 		imagecopyresampled($dest, $im, 0, 0, round((max($w_src, $h_src) - min($w_src, $h_src)) / 2), 0, $w, $w, min($w_src, $h_src), min($w_src, $h_src));
 	}
-	if($w_src < $h_src) {
+	if ($w_src < $h_src) {
 		imagecopyresampled($dest, $im, 0, 0, 0, 0, $w, $w, min($w_src, $h_src), min($w_src, $h_src));
 	}
-	if($w_src == $h_src) {
+	if ($w_src == $h_src) {
 		imagecopyresampled($dest, $im, 0, 0, 0, 0, $w, $w, $w_src, $w_src);
 	}
-	imagejpeg($dest, $_SERVER["DOCUMENT_ROOT"].'/'.$file_path.'.jpg');
+	imagejpeg($dest, $_SERVER["DOCUMENT_ROOT"] . '/' . $file_path . '.jpg');
 
 	return true;
 }
 
-function getForbiddenExtensionEntry() {
+function getForbiddenExtensionEntry()
+{
 	return ['ph', 'js', 'htm', 'svg', 'tpl', 'htaccess'];
 }
 
-function if_img($name) {
+function if_img($name)
+{
 	$extension = explode(".", $name);
 	$extension = end($extension);
-	if((strcasecmp($extension, 'jpg') == 0) || (strcasecmp($extension, 'jpeg') == 0) || (strcasecmp($extension, 'png') == 0) || (strcasecmp($extension, 'gif') == 0) || (strcasecmp($extension, 'bmp') == 0)) {
+	if ((strcasecmp($extension, 'jpg') == 0) || (strcasecmp($extension, 'jpeg') == 0) || (strcasecmp($extension, 'png') == 0) || (strcasecmp($extension, 'gif') == 0) || (strcasecmp($extension, 'bmp') == 0)) {
 		return true;
 	} else {
 		return false;
 	}
 }
 
-function if_jpg($name) {
+function if_jpg($name)
+{
 	$extension = explode(".", $name);
 	$extension = end($extension);
-	if((strcasecmp($extension, 'jpg') == 0) || (strcasecmp($extension, 'jpeg') == 0)) {
+	if ((strcasecmp($extension, 'jpg') == 0) || (strcasecmp($extension, 'jpeg') == 0)) {
 		return true;
 	} else {
 		return false;
 	}
 }
 
-function if_png($name) {
+function if_png($name)
+{
 	$extension = explode(".", $name);
 	$extension = end($extension);
-	if((strcasecmp($extension, 'png') == 0)) {
+	if ((strcasecmp($extension, 'png') == 0)) {
 		return true;
 	} else {
 		return false;
 	}
 }
 
-function if_gif($name) {
+function if_gif($name)
+{
 	$extension = explode(".", $name);
 	$extension = end($extension);
-	if((strcasecmp($extension, 'gif') == 0)) {
+	if ((strcasecmp($extension, 'gif') == 0)) {
 		return true;
 	} else {
 		return false;
 	}
 }
 
-function if_zip($name) {
+function if_zip($name)
+{
 	$extension = explode(".", $name);
 	$extension = end($extension);
-	if((strcasecmp($extension, 'zip') == 0)) {
+	if ((strcasecmp($extension, 'zip') == 0)) {
 		return true;
 	} else {
 		return false;
 	}
 }
 
-function if_mp3($name) {
+function if_mp3($name)
+{
 	$extension = explode(".", $name);
 	$extension = end($extension);
-	if((strcasecmp($extension, 'mp3') == 0)) {
+	if ((strcasecmp($extension, 'mp3') == 0)) {
 		return true;
 	} else {
 		return false;
 	}
 }
 
-function if_archive($name) {
+function if_archive($name)
+{
 	$extension = explode(".", $name);
 	$extension = end($extension);
-	if((strcasecmp($extension, 'rar') == 0) || (strcasecmp($extension, 'zip') == 0) || (strcasecmp($extension, '7z') == 0)) {
+	if ((strcasecmp($extension, 'rar') == 0) || (strcasecmp($extension, 'zip') == 0) || (strcasecmp($extension, '7z') == 0)) {
 		return true;
 	} else {
 		return false;
 	}
 }
 
-function if_ico($name) {
+function if_ico($name)
+{
 	$extension = explode(".", $name);
 	$extension = end($extension);
-	if((strcasecmp($extension, 'ico') == 0)) {
+	if ((strcasecmp($extension, 'ico') == 0)) {
 		return true;
 	} else {
 		return false;
 	}
 }
 
-function if_scss($name) {
+function if_scss($name)
+{
 	$extension = explode(".", $name);
 	$extension = end($extension);
-	if((strcasecmp($extension, 'scss') == 0)) {
+	if ((strcasecmp($extension, 'scss') == 0)) {
 		return true;
 	} else {
 		return false;
 	}
 }
 
-function if_css($name) {
+function if_css($name)
+{
 	$extension = explode(".", $name);
 	$extension = end($extension);
-	if((strcasecmp($extension, 'css') == 0)) {
+	if ((strcasecmp($extension, 'css') == 0)) {
 		return true;
 	} else {
 		return false;
 	}
 }
 
-function if_tpl($name) {
+function if_tpl($name)
+{
 	$extension = explode(".", $name);
 	$extension = end($extension);
-	if((strcasecmp($extension, 'tpl') == 0)) {
+	if ((strcasecmp($extension, 'tpl') == 0)) {
 		return true;
 	} else {
 		return false;
 	}
 }
 
-function if_date($day, $month, $year) {
+function if_date($day, $month, $year)
+{
 	return checkdate($month, $day, $year);
 }
 
-function set_temp_file_name($name) {
+function set_temp_file_name($name)
+{
+	$date = date('H:i:s:u');
 	$extension = explode(".", $name);
 	$extension = end($extension);
 
-	return md5($name).".".$extension;
+	return md5("{$name}-{$date}") . "." . $extension;
 }
 
-function get_editor_settings() {
+function get_editor_settings()
+{
 	$STH = pdo()->prepare("SELECT `data` FROM `config__strings` WHERE `id`=:id LIMIT 1");
 	$STH->setFetchMode(PDO::FETCH_OBJ);
 	$STH->execute(array(':id' => 2));
 	$row = $STH->fetch();
 	$settings = unserialize($row->data);
 
-	if($settings['file_manager'] == 1) {
+	if ($settings['file_manager'] == 1) {
 		$settings['file_manager'] = 'responsivefilemanager';
 	} else {
 		$settings['file_manager'] = '';
 	}
-	if($settings['file_manager_theme'] == 1) {
+	if ($settings['file_manager_theme'] == 1) {
 		$settings['file_manager_theme'] = 'oxide';
 	} else {
 		$settings['file_manager_theme'] = 'oxide-dark';
@@ -1710,20 +1808,23 @@ function get_editor_settings() {
 	return $settings;
 }
 
-function preg_icon($data) {
+function preg_icon($data)
+{
 	$data = preg_replace('/{ ?glyphicon glyphicon\-([a-zA-Z\-]*) ?}/', '<span class="glyphicon glyphicon-${1}"></span>', $data);
 	$data = preg_replace('/{ ?(fas|fa|fab) fa\-([a-zA-Z\-]*) ?}/', '<i class="${1} fa-${2}"></i>', $data);
 
 	return $data;
 }
 
-function preg_color($data) {
+function preg_color($data)
+{
 	$data = preg_replace('/{ ?color:#([a-zA-Z0-9]{6}) ?}(.*){ ?\/color ?}/', '<span style="color: #${1}">${2}</span>', $data);
 
 	return $data;
 }
 
-function upreg_menu_name($data) {
+function upreg_menu_name($data)
+{
 	$data = preg_replace('/<span class="glyphicon glyphicon\-([a-zA-Z\-]*)"><\/span>/', '{glyphicon glyphicon-${1}}', $data);
 	$data = preg_replace('/<i class="(fas|fa|fab) fa\-([a-zA-Z\-]*)"><\/i>/', '{${1} fa-${2}}', $data);
 	$data = preg_replace('/<font color="#([a-zA-Z0-9]{6})">(.*)<\/font>/', '{color:#${1}}${2}{/color}', $data);
@@ -1732,15 +1833,16 @@ function upreg_menu_name($data) {
 	return $data;
 }
 
-function get_template() {
-	if(isset($_COOKIE['template']) && $_COOKIE['template'] != "" && $_COOKIE['template'] != "admin" && preg_match("/([a-zA-Z0-9]{1,50})/", $_COOKIE['template'])) {
+function get_template()
+{
+	if (isset($_COOKIE['template']) && $_COOKIE['template'] != "" && $_COOKIE['template'] != "admin" && preg_match("/([a-zA-Z0-9]{1,50})/", $_COOKIE['template'])) {
 		$template = check($_COOKIE['template'], null);
 		$_SESSION['original_template'] = configs()->template;
 	} else {
 		unset($_SESSION['original_template']);
-		if(configs()->template != configs()->template_mobile) {
+		if (configs()->template != configs()->template_mobile) {
 			$MD = new MobileDetect;
-			if($MD->isMobile()) {
+			if ($MD->isMobile()) {
 				$template = configs()->template_mobile;
 			} else {
 				$template = configs()->template;
@@ -1754,73 +1856,78 @@ function get_template() {
 	return $template;
 }
 
-function check_function($func, $names) {
+function check_function($func, $names)
+{
 	$names = explode(',', $names);
 	$func = check($func, null);
-	if(isset($func) && in_array($func, $names)) {
+	if (isset($func) && in_array($func, $names)) {
 		return $func;
 	} else {
 		return false;
 	}
 }
 
-function return_html($data, $status, $show_icon) {
-	if($show_icon == 2) {
-		if($status == 1) {
-			$data = '<span class="m-icon icon-ok"></span> '.$data;
-		} elseif($status == 2) {
-			$data = '<span class="m-icon icon-remove"></span> '.$data;
+function return_html($data, $status, $show_icon)
+{
+	if ($show_icon == 2) {
+		if ($status == 1) {
+			$data = '<span class="m-icon icon-ok"></span> ' . $data;
+		} elseif ($status == 2) {
+			$data = '<span class="m-icon icon-remove"></span> ' . $data;
 		}
 	}
 
-	if($status == 1) {
-		$data = '<p class="text-success">'.$data.'</p>';
-	} elseif($status == 2) {
-		$data = '<p class="text-danger">'.$data.'</p>';
+	if ($status == 1) {
+		$data = '<p class="text-success">' . $data . '</p>';
+	} elseif ($status == 2) {
+		$data = '<p class="text-danger">' . $data . '</p>';
 	}
 
-	if($show_icon == 1) {
-		if($status == 1) {
-			$data = $data.'<script>setTimeout(show_ok, 500);</script>';
-		} elseif($status == 2) {
-			$data = $data.'<script>setTimeout(show_error, 500);</script>';
+	if ($show_icon == 1) {
+		if ($status == 1) {
+			$data = $data . '<script>setTimeout(show_ok, 500);</script>';
+		} elseif ($status == 2) {
+			$data = $data . '<script>setTimeout(show_error, 500);</script>';
 		}
 	}
 
 	exit($data);
 }
 
-function is_auth() {
-	if(isset($_SESSION['id'])) {
+function is_auth()
+{
+	if (isset($_SESSION['id'])) {
 		return true;
 	} else {
 		return false;
 	}
 }
 
-function is_admin() {
-	if(isset($_SESSION['admin']) and $_SESSION['admin'] == "yes") {
+function is_admin()
+{
+	if (isset($_SESSION['admin']) and $_SESSION['admin'] == "yes") {
 		return true;
 	} else {
 		return false;
 	}
 }
 
-function is_admin_id($id = 0) {
+function is_admin_id($id = 0)
+{
 	global $main_admins;
 
-	if($id === 0) {
-		if(!is_auth()) {
+	if ($id === 0) {
+		if (!is_auth()) {
 			return false;
 		}
 
-		if(in_array($_SESSION['id'], $main_admins)) {
+		if (in_array($_SESSION['id'], $main_admins)) {
 			return true;
 		} else {
 			return false;
 		}
 	} else {
-		if(in_array($id, $main_admins)) {
+		if (in_array($id, $main_admins)) {
 			return true;
 		} else {
 			return false;
@@ -1828,33 +1935,35 @@ function is_admin_id($id = 0) {
 	}
 }
 
-function is_worthy($access, $group = 0) {
+function is_worthy($access, $group = 0)
+{
 	global $users_groups;
 
-	if($group == 0 && array_key_exists('rights', $_SESSION)) {
+	if ($group == 0 && array_key_exists('rights', $_SESSION)) {
 		$group = $_SESSION['rights'];
 	}
 
-	if(strripos($users_groups[$group]['rights'], $access) !== false) {
+	if (strripos($users_groups[$group]['rights'], $access) !== false) {
 		return true;
 	} else {
 		return false;
 	}
 }
 
-function is_worthy_specifically($access, $refinement, $group = 0) {
+function is_worthy_specifically($access, $refinement, $group = 0)
+{
 	global $users_groups;
 
-	if($group == 0 && array_key_exists('rights', $_SESSION)) {
+	if ($group == 0 && array_key_exists('rights', $_SESSION)) {
 		$group = $_SESSION['rights'];
 	}
 
-	if(preg_match('/'.$access.'([:0-9]*)[a-z]?/is', $users_groups[$group]['rights'], $matches)) {
-		if($matches[1] == '') {
+	if (preg_match('/' . $access . '([:0-9]*)[a-z]?/is', $users_groups[$group]['rights'], $matches)) {
+		if ($matches[1] == '') {
 			return true;
 		} else {
 			$rights = explode(":", $matches[1]);
-			if(in_array($refinement, $rights)) {
+			if (in_array($refinement, $rights)) {
 				return true;
 			}
 		}
@@ -1863,19 +1972,20 @@ function is_worthy_specifically($access, $refinement, $group = 0) {
 	return false;
 }
 
-function get_specifically_worthy($access, $group = 0) {
+function get_specifically_worthy($access, $group = 0)
+{
 	global $users_groups;
 
-	if($group == 0 && array_key_exists('rights', $_SESSION)) {
+	if ($group == 0 && array_key_exists('rights', $_SESSION)) {
 		$group = $_SESSION['rights'];
 	}
 
-	if(preg_match('/'.$access.'([:0-9]*)[a-z]?/is', $users_groups[$group]['rights'], $matches)) {
-		if($matches[1] == '') {
+	if (preg_match('/' . $access . '([:0-9]*)[a-z]?/is', $users_groups[$group]['rights'], $matches)) {
+		if ($matches[1] == '') {
 			return true;
 		} else {
 			$rights = explode(":", $matches[1]);
-			if(!is_array($rights)) {
+			if (!is_array($rights)) {
 				$rights = array(0 => $rights);
 			}
 			return $rights;
@@ -1885,10 +1995,11 @@ function get_specifically_worthy($access, $group = 0) {
 	return false;
 }
 
-function validateCaptcha($gRecaptchaResponse) {
+function validateCaptcha($gRecaptchaResponse)
+{
 	require_once __DIR__ . '/classes/ReCaptcha/loader.php';
 
-	if(configs()->captcha == 1) {
+	if (configs()->captcha == 1) {
 		global $host;
 
 		$recaptcha = new \ReCaptcha\ReCaptcha(configs()->captcha_secret);
@@ -1921,7 +2032,7 @@ function isOnMyBlacklist($pdo, $userId)
 {
 	$result = false;
 
-	if(is_auth()) {
+	if (is_auth()) {
 		$result = isOnBlackList($pdo, $_SESSION['id'], $userId);
 	}
 
@@ -1932,7 +2043,7 @@ function isOnHisBlacklist($pdo, $userId)
 {
 	$result = false;
 
-	if(is_auth()) {
+	if (is_auth()) {
 		$result = isOnBlackList($pdo, $userId, $_SESSION['id']);
 	}
 
@@ -1941,12 +2052,12 @@ function isOnHisBlacklist($pdo, $userId)
 
 function isSomeKeyInArrayExists($keys, $array)
 {
-	if(!is_array($keys)) {
+	if (!is_array($keys)) {
 		$keys = [$keys];
 	}
 
-	foreach($keys as $key) {
-		if(array_key_exists($key, $array)) {
+	foreach ($keys as $key) {
+		if (array_key_exists($key, $array)) {
 			return $key;
 		}
 	}
@@ -1954,25 +2065,25 @@ function isSomeKeyInArrayExists($keys, $array)
 	return false;
 }
 
-if(!function_exists('array_column')) {
+if (!function_exists('array_column')) {
 	function array_column(array $input, $columnKey, $indexKey = null)
 	{
 		$array = [];
-		foreach($input as $value) {
-			if(!array_key_exists($columnKey, $value)) {
+		foreach ($input as $value) {
+			if (!array_key_exists($columnKey, $value)) {
 				return false;
 			}
-			if(is_null($indexKey)) {
-				if(is_object($value)) {
+			if (is_null($indexKey)) {
+				if (is_object($value)) {
 					$array[] = $value->{$columnKey};
 				} else {
 					$array[] = $value[$columnKey];
 				}
 			} else {
-				if(!array_key_exists($indexKey, $value)) {
+				if (!array_key_exists($indexKey, $value)) {
 					return false;
 				}
-				if(!is_scalar($value[$indexKey])) {
+				if (!is_scalar($value[$indexKey])) {
 					return false;
 				}
 				$array[$value[$indexKey]] = $value[$columnKey];
@@ -1986,7 +2097,7 @@ function isNeedHidePlayerId()
 {
 	global $conf;
 
-	if($conf->hide_players_id == 1 || $conf->hide_players_id == 3) {
+	if ($conf->hide_players_id == 1 || $conf->hide_players_id == 3) {
 		return true;
 	} else {
 		return false;
@@ -1997,7 +2108,7 @@ function isNeedHideAdminId()
 {
 	global $conf;
 
-	if($conf->hide_players_id == 1 || $conf->hide_players_id == 2) {
+	if ($conf->hide_players_id == 1 || $conf->hide_players_id == 2) {
 		return true;
 	} else {
 		return false;
@@ -2008,9 +2119,8 @@ function hidePlayerId($id)
 {
 	global $messages;
 
-	if(
-		(
-			is_worthy('i')
+	if (
+		(is_worthy('i')
 			|| is_worthy('k')
 			|| is_worthy('s')
 			|| is_worthy('j')
@@ -2023,7 +2133,8 @@ function hidePlayerId($id)
 	}
 }
 
-function validateIp($ip) {
+function validateIp($ip)
+{
 	if (filter_var($ip, FILTER_VALIDATE_IP)) {
 		return true;
 	} else {
@@ -2031,7 +2142,7 @@ function validateIp($ip) {
 	}
 }
 
-if(
+if (
 	!function_exists('random_bytes')
 	|| !function_exists('random_int')
 ) {
@@ -2040,7 +2151,7 @@ if(
 
 function isStringLengthLess($string, $length)
 {
-	if(mb_strlen($string, 'UTF-8') < $length) {
+	if (mb_strlen($string, 'UTF-8') < $length) {
 		return true;
 	} else {
 		return false;
@@ -2054,7 +2165,7 @@ function isStringLengthMore($string, $length)
 
 function getPhpVersion()
 {
-	if(phpversion()) {
+	if (phpversion()) {
 		$phpVersion = explode('.', phpversion());
 	} else {
 		$phpVersion = explode('.', PHP_VERSION);
@@ -2088,7 +2199,7 @@ function tpl()
 {
 	global $tpl;
 
-	if(empty($tpl)) {
+	if (empty($tpl)) {
 		$tpl = new Template;
 	}
 
@@ -2097,10 +2208,9 @@ function tpl()
 
 function isRightToken()
 {
-	if(
+	if (
 		configs()->token == 1
-		&& (
-			empty($_SESSION['token']) || empty($_POST['token']) || $_SESSION['token'] != $_POST['token']
+		&& (empty($_SESSION['token']) || empty($_POST['token']) || $_SESSION['token'] != $_POST['token']
 		)
 	) {
 		return false;
@@ -2111,7 +2221,7 @@ function isRightToken()
 
 function isPostRequest()
 {
-	if(empty($_POST) || !array_key_exists('phpaction', $_POST)) {
+	if (empty($_POST) || !array_key_exists('phpaction', $_POST)) {
 		return false;
 	} else {
 		return true;
@@ -2138,7 +2248,7 @@ function HTMLPurifier()
 	$HTMLDefinition->addAttribute('a', 'target', 'Enum#_blank,_self,_target,_top');
 	$HTMLDefinition->addAttribute('iframe', 'allowfullscreen', 'Enum#allowfullscreen');
 
-	foreach(['audio', 'video'] as $item) {
+	foreach (['audio', 'video'] as $item) {
 		$$item = $HTMLDefinition->addElement(
 			$item,
 			'Block',
@@ -2170,7 +2280,7 @@ function dd($data)
 
 function getNameLike($name)
 {
-	if(mb_strlen($name, 'UTF-8') < 3) {
+	if (mb_strlen($name, 'UTF-8') < 3) {
 		return $name;
 	} else {
 		return "%" . strip_data($name) . "%";
@@ -2179,7 +2289,7 @@ function getNameLike($name)
 
 function isMobile()
 {
-	if((new MobileDetect())->isMobile()) {
+	if ((new MobileDetect())->isMobile()) {
 		return true;
 	} else {
 		return false;
@@ -2188,10 +2298,10 @@ function isMobile()
 
 function findAndReplace($find, $replace, $path)
 {
-	foreach(glob($path, GLOB_BRACE) as $file) {
+	foreach (glob($path, GLOB_BRACE) as $file) {
 		$fileData = file_get_contents($file);
 
-		if(stristr($fileData, $find) !== false) {
+		if (stristr($fileData, $find) !== false) {
 			file_put_contents($file, str_replace($find, $replace, $fileData));
 		}
 	}
@@ -2204,17 +2314,18 @@ function getMerchants()
 
 function getLimit($attr)
 {
-	if(
-		in_array($attr,
-		    [
-			    'bans_lim',
-			    'muts_lim',
-			    'users_lim',
-			    'bans_lim2',
-			    'news_lim',
-			    'stats_lim',
-			    'complaints_lim'
-		    ]
+	if (
+		in_array(
+			$attr,
+			[
+				'bans_lim',
+				'muts_lim',
+				'users_lim',
+				'bans_lim2',
+				'news_lim',
+				'stats_lim',
+				'complaints_lim'
+			]
 		)
 	) {
 		return pdo()
@@ -2228,7 +2339,7 @@ function getLimit($attr)
 
 function getPageParam($paramName, $type = 'int')
 {
-	if(array_key_exists($paramName, $_GET)) {
+	if (array_key_exists($paramName, $_GET)) {
 		return clean($_GET[$paramName], $type);
 	} else {
 		return 0;
@@ -2237,7 +2348,7 @@ function getPageParam($paramName, $type = 'int')
 
 function getPageStartPosition($number, $limit)
 {
-	if($number) {
+	if ($number) {
 		return ($number - 1) * $limit;
 	} else {
 		return 0;
@@ -2246,7 +2357,7 @@ function getPageStartPosition($number, $limit)
 
 function resetIfPaginationIncorrect($number, $limit, $count, $to)
 {
-	if(($number * $limit - $count) > $limit) {
+	if (($number * $limit - $count) > $limit) {
 		header('Location: ' . $to);
 		exit();
 	}
@@ -2290,18 +2401,18 @@ function getLibAssets($libNames)
 
 	$libsStr = '';
 
-	if(!is_array($libNames)) {
+	if (!is_array($libNames)) {
 		$libNames = [$libNames];
 	}
 
-	if(is_array($libNames)) {
-		foreach($libNames as $item) {
-			if(array_key_exists($item, $libs)) {
+	if (is_array($libNames)) {
+		foreach ($libNames as $item) {
+			if (array_key_exists($item, $libs)) {
 				$libsStr .= $libs[$item];
 			}
 		}
 	}
-	
+
 	return $libsStr;
 }
 
@@ -2328,15 +2439,17 @@ function isModuleActive($moduleName)
 	return $STH->fetchColumn() == 1;
 }
 
-function isEmailIntroduced($email) {
-	if(substr($email, 0, 6) != 'vk_id_' && !empty($email)) {
+function isEmailIntroduced($email)
+{
+	if (substr($email, 0, 6) != 'vk_id_' && !empty($email)) {
 		return true;
 	} else {
 		return false;
 	}
 }
 
-function removeOldFiles($dir, $days) {
+function removeOldFiles($dir, $days)
+{
 	$files = glob($dir . '/*');
 	$now   = time();
 
@@ -2349,7 +2462,8 @@ function removeOldFiles($dir, $days) {
 	}
 }
 
-function curl_get_process($data = []) {
+function curl_get_process($data = [])
+{
 	$ch = curl_init($data['website']);
 	curl_setopt($ch, CURLOPT_POST, 1);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $data['data']);
@@ -2358,13 +2472,14 @@ function curl_get_process($data = []) {
 	curl_setopt($ch, CURLOPT_HEADER, false);
 	$result = curl_exec($ch);
 	curl_close($ch);
-	
+
 	return $result;
 }
 
-function download_file($data = []) {
-	if(isset($data['temp'])) {
-		if(!file_exists("{$_SERVER['DOCUMENT_ROOT']}/{$data['temp']}")) {
+function download_file($data = [])
+{
+	if (isset($data['temp'])) {
+		if (!file_exists("{$_SERVER['DOCUMENT_ROOT']}/{$data['temp']}")) {
 			mkdir("{$_SERVER['DOCUMENT_ROOT']}/{$data['temp']}");
 		}
 	}
@@ -2378,41 +2493,43 @@ function download_file($data = []) {
 	return ['status' => fclose($fOpen), 'file' => "{$_SERVER['DOCUMENT_ROOT']}/{$data['temp']}/{$data['file']}"];
 }
 
-function is_valid_site($domain = "google.com") {
-	if(!filter_var($domain, FILTER_VALIDATE_URL)):
+function is_valid_site($domain = "google.com")
+{
+	if (!filter_var($domain, FILTER_VALIDATE_URL)) :
 		return false;
 	endif;
-	
+
 	$curlInit = curl_init($domain);
 	curl_setopt($curlInit, CURLOPT_CONNECTTIMEOUT, 10);
 	curl_setopt($curlInit, CURLOPT_HEADER, true);
 	curl_setopt($curlInit, CURLOPT_NOBODY, true);
 	curl_setopt($curlInit, CURLOPT_RETURNTRANSFER, true);
-	
+
 	$response = curl_exec($curlInit);
 	curl_close($curlInit);
-	
-	if($response):
+
+	if ($response) :
 		return true;
 	endif;
-	
+
 	return false;
 }
 
-function check_update_version($pdo, $version) {
-	$remoteVersions = curl_get_process(['website' => "https://minibam.ru/api?type=updates",'data' => '&product=gamecms']);
+function check_update_version($pdo, $version)
+{
+	$remoteVersions = curl_get_process(['website' => "https://minibam.ru/api?type=updates", 'data' => '&product=gamecms']);
 	$remoteVersions = json_decode(gzdecode($remoteVersions), true);
-	
-	for($i = 0; $i < sizeof($remoteVersions); $i++) {
-		if($version == $remoteVersions[$i]['version']) {
+
+	for ($i = 0; $i < sizeof($remoteVersions); $i++) {
+		if ($version == $remoteVersions[$i]['version']) {
 			$index = $i;
 			break;
 		}
 	}
-	
-	if(isset($remoteVersions[$index + 1]['version']) && $remoteVersions[$index]['version'] < $remoteVersions[$index + 1]['version']) {
+
+	if (isset($remoteVersions[$index + 1]['version']) && $remoteVersions[$index]['version'] < $remoteVersions[$index + 1]['version']) {
 		return ['status' => '0', 'versions' => $remoteVersions, 'index' => $index];
 	}
-	
+
 	return ['status' => '1', 'versions' => $remoteVersions, 'index' => $index];
 }
