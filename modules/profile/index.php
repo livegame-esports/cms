@@ -1,16 +1,16 @@
 <?php
-if(page()->privacy == 1 && !is_auth()) {
+if (page()->privacy == 1 && !is_auth()) {
 	show_error_page('not_auth');
 }
 
 $urlParts = explode('/', page()->originalUrl);
 
-if(count($urlParts) > 1) {
+if (count($urlParts) > 1) {
 	$row = Users::getIdByRoute($pdo, $urlParts[1]);
 	$id = empty($row->id) ? null : $row->id;
 } else {
-	if(array_key_exists('id', $_GET) || is_auth()) {
-		if(array_key_exists('id', $_GET)) {
+	if (array_key_exists('id', $_GET) || is_auth()) {
+		if (array_key_exists('id', $_GET)) {
 			$id = getPageParam('id');
 		} else {
 			$id = $_SESSION['id'];
@@ -18,11 +18,11 @@ if(count($urlParts) > 1) {
 
 		$row = Users::getRouteById($pdo, $id);
 
-		if(!empty($row->route)) {
+		if (!empty($row->route)) {
 			http_response_code(301);
 			header('Location: ../' .  PagesInfo::PROFILE_PAGE_URL . '/' . $row->route);
 			exit();
-		} elseif(!array_key_exists('id', $_GET)) {
+		} elseif (!array_key_exists('id', $_GET)) {
 			header('Location: ../' .  PagesInfo::PROFILE_PAGE_URL . '?id=' . $id);
 			exit();
 		}
@@ -31,16 +31,16 @@ if(count($urlParts) > 1) {
 	}
 }
 
-if(!$profile = Users::getUserData($pdo, $id)) {
+if (!$profile = Users::getUserData($pdo, $id)) {
 	show_error_page();
 }
 
-if(!empty($profile->last_topic)) {
+if (!empty($profile->last_topic)) {
 	$STH = pdo()->prepare("SELECT `name` FROM `forums__topics` WHERE `id`=:id LIMIT 1");
 	$STH->setFetchMode(PDO::FETCH_OBJ);
 	$STH->execute(array(':id' => $profile->last_topic));
 	$row = $STH->fetch();
-	if(isset($row->name)) {
+	if (isset($row->name)) {
 		$profile->topic_name = $row->name;
 	} else {
 		$profile->topic_name = '';
@@ -82,18 +82,18 @@ $nav = [
 ];
 $nav = $tpl->get_nav($nav, 'elements/nav_li.tpl');
 
-if(is_auth()) {
+if (is_auth()) {
 	include_once __DIR__ . '/../../inc/authorized.php';
 } else {
 	include_once __DIR__ . '/../../inc/not_authorized.php';
 }
 
-if(is_auth()) {
+if (is_auth()) {
 	$STH = pdo()->query("SELECT id FROM users__friends WHERE ((id_sender = '$id' AND id_taker = '$_SESSION[id]') OR (id_sender = '$_SESSION[id]' AND id_taker = '$id')) AND accept = '1' LIMIT 1");
 	$STH->setFetchMode(PDO::FETCH_OBJ);
 	$row = $STH->fetch();
-	if(empty($row->id)) {
-		if($_SESSION['id'] != $profile->id) {
+	if (empty($row->id)) {
+		if ($_SESSION['id'] != $profile->id) {
 			$checker = '1';
 		} else {
 			$checker = '2';
@@ -108,14 +108,14 @@ if(is_auth()) {
 $STH = pdo()->query("SELECT id FROM users__online WHERE user_id='$id' LIMIT 1");
 $STH->setFetchMode(PDO::FETCH_OBJ);
 $row = $STH->fetch();
-if(isset($row->id)) {
+if (isset($row->id)) {
 	$last_activity = $messages['Online'];
 } else {
-	if($profile->last_activity == '0000-00-00 00:00:00') {
-		$last_activity = $messages['Was_online'].$messages['Bc'];
+	if ($profile->last_activity == '0000-00-00 00:00:00') {
+		$last_activity = $messages['Was_online'] . $messages['Bc'];
 	} else {
 		$last_activity = expand_date($profile->last_activity, 7);
-		$last_activity = $messages['Was_online'].$last_activity;
+		$last_activity = $messages['Was_online'] . $last_activity;
 	}
 }
 
@@ -123,7 +123,7 @@ $tpl->result['friends'] = '';
 
 $STH = pdo()->query("SELECT users__friends.id_taker, users.id, users.login, users.avatar, users.rights FROM users__friends LEFT JOIN users on users__friends.id_taker = users.id WHERE (users__friends.id_sender='$profile->id') AND users__friends.accept='1' UNION SELECT users__friends.id_sender, users.id, users.login, users.avatar, users.rights FROM users__friends LEFT JOIN users ON users__friends.id_sender = users.id WHERE (users__friends.id_taker='$profile->id') AND users__friends.accept='1'");
 $STH->setFetchMode(PDO::FETCH_OBJ);
-while($row = $STH->fetch()) {
+while ($row = $STH->fetch()) {
 	$friend_group = $users_groups[$row->rights];
 	$tpl->load_template('elements/mini_friend.tpl');
 	$tpl->set("{id}", $row->id);
@@ -134,14 +134,14 @@ while($row = $STH->fetch()) {
 	$tpl->compile('friends');
 	$tpl->clear();
 }
-if($tpl->result['friends'] == '') {
-	$tpl->result['friends'] = '<span class="empty-element">'.$messages['There_are_no_friends'].'</span>';
+if ($tpl->result['friends'] == '') {
+	$tpl->result['friends'] = '<span class="empty-element">' . $messages['There_are_no_friends'] . '</span>';
 }
 
-if(empty($profile->fb)) {
+if (empty($profile->fb)) {
 	$profile->fb = 0;
 }
-if(empty($profile->fb_api)) {
+if (empty($profile->fb_api)) {
 	$profile->fb_api = 0;
 }
 
@@ -149,21 +149,21 @@ $isFriend = 'false';
 $issetFriendRequestFromMe = 'false';
 $issetFriendRequestFromHim = 'false';
 
-if(is_auth()) {
+if (is_auth()) {
 	$STH = pdo()->prepare("SELECT id, id_sender, id_taker, accept FROM users__friends WHERE (id_sender=:friend_id AND id_taker=:my_id) OR (id_sender=:my_id AND id_taker=:friend_id) LIMIT 1");
 	$STH->setFetchMode(PDO::FETCH_OBJ);
 	$STH->execute([':my_id' => $_SESSION['id'], ':friend_id' => $profile->id]);
 	$row = $STH->fetch();
 }
 
-if(isset($row->id) && ($row->accept == 1)) {
+if (isset($row->id) && ($row->accept == 1)) {
 	$isFriend = 'true';
 }
-if(isset($row->id) && ($row->accept == 0)) {
-	if($row->id_sender == $_SESSION['id']) {
+if (isset($row->id) && ($row->accept == 0)) {
+	if ($row->id_sender == $_SESSION['id']) {
 		$issetFriendRequestFromMe = 'true';
 	}
-	if($row->id_taker == $_SESSION['id']) {
+	if ($row->id_taker == $_SESSION['id']) {
 		$issetFriendRequestFromHim = 'true';
 	}
 }
@@ -176,11 +176,10 @@ $tpl->set("{last_activity}", $last_activity);
 $tpl->set("{template}", configs()->template);
 $tpl->set("{profile_id}", $profile->id);
 $tpl->set("{login}", $profile->login);
-if($profile->verification) {
+if ($profile->verified) {
 	$tpl->set("{verification}", "<img src=\"/templates/admin/img/verification-badge.svg\" style=\"height:18px; width:18px;\" title=\"Страница официально подтверждена!\">");
-}
-else {
-	$tpl->set("{verification}", "");
+} else {
+	$tpl->set("{verification}", null);
 }
 $tpl->set("{avatar}", $profile->avatar);
 $tpl->set("{group}", $users_groups[$profile->rights]['name']);
