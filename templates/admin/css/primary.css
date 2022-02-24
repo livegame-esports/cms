@@ -1,0 +1,197 @@
+html {
+  min-height: 100%;
+  height: 100%;
+  background-color: #f5f5f5;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", "PT Sans", sans-serif, arial;
+}
+
+* {
+  outline: none !important;
+}
+
+a, a:hover, a:active, a:focus {
+  white-space: nowrap;
+}
+
+.wapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0;
+}
+.wapper > section {
+  flex: 1 0 auto;
+}
+.wapper > section > header {
+  height: 50px;
+  background: #45698b;
+  overflow: hidden;
+}
+.wapper > section > header .menu-button {
+  float: left;
+  margin-top: 8px;
+  margin-right: 10px;
+  cursor: pointer;
+  font-size: 25px;
+  color: white;
+}
+.wapper > section > header .menu-button:hover, .wapper > section > header .menu-button:active {
+  color: white;
+}
+.wapper > section > header .logo {
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  line-height: 50px;
+  font-family: "Inter", serif;
+  color: #ffffff;
+  font-size: 20px;
+  white-space: nowrap;
+  display: inline-block;
+}
+.wapper > section > header .logo img {
+  height: 40px;
+}
+.wapper > section > header .logo:hover {
+  text-decoration: none;
+  color: #eceaea;
+}
+@media (max-width: 767px) {
+  .wapper > section > header .logo {
+    max-width: 250px !important;
+  }
+}
+.wapper > section > header .image-logo {
+  width: 50px;
+  height: 50px;
+  float: right;
+}
+.wapper > section > aside {
+  position: sticky;
+  top: 0;
+  width: 20%;
+  left: 0;
+  float: left;
+  background: #45698b;
+  height: 100vh;
+  overflow: hidden;
+}
+.wapper > section > main {
+  position: relative;
+  overflow: hidden;
+  width: 80%;
+  float: right;
+}
+.wapper > section > main .page {
+  padding: 15px 10px;
+}
+@media (max-width: 767px) {
+  .wapper > section > main, .wapper > section > aside {
+    width: 100% !important;
+  }
+  .wapper > section > aside {
+    overflow-y: scroll;
+    height: calc( 100vh - 50px );
+    position: relative !important;
+  }
+}
+.wapper footer {
+  flex: 0 0 auto;
+  position: relative;
+  min-height: 60px;
+  line-height: 60px;
+  text-align: center;
+}
+.wapper footer .copyright {
+  text-align: center;
+  line-height: 60px;
+}
+
+.copyright {
+  line-height: 15px;
+  font-size: 13px;
+  transition: all 0.5s;
+  color: #555555;
+}
+.copyright a {
+  color: #555555;
+}
+.copyright a:hover {
+  color: RGB(69, 104, 142);
+}
+
+.central-block {
+  width: 450px;
+  background: #ffffff;
+  box-shadow: 0 0 rgba(0, 0, 0, 0), 0 0 rgba(0, 0, 0, 0), 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.central-block.auth-block {
+  width: 450px;
+}
+.central-block.install-block {
+  width: 550px;
+}
+.central-block .central-block-header {
+  height: 40px;
+  background: #45698b;
+  border-radius: 3px;
+}
+.central-block .central-block-header h3 {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  font-size: 18px;
+  color: white;
+  position: absolute;
+  width: 100%;
+  line-height: 40px;
+  top: 0;
+}
+.central-block .central-block-header img {
+  height: 40px;
+  width: 40px;
+  margin-left: 15px;
+}
+.central-block .central-block-body {
+  position: relative;
+  height: auto;
+  overflow: hidden;
+  padding: 10px;
+}
+.central-block .central-block-body .form-horizontal {
+  max-width: 340px;
+  margin: 40px auto 30px;
+}
+.central-block .central-block-body .form-horizontal input {
+  margin-bottom: 10px;
+}
+
+@media (max-width: 500px) {
+  .central-block {
+    width: calc( 100% - 30px ) !important;
+  }
+}
+@media (min-height: 751px) {
+  .central-block {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+@media (max-height: 750px) {
+  .central-block {
+    top: 10px;
+    position: relative;
+    margin: 0 auto 10px;
+  }
+}
+
+/*# sourceMappingURL=primary.css.map */

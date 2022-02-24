@@ -1,0 +1,1 @@
+<option value="{value}" <?php if("{selected}" == "1"): ?> selected <?php endif; ?>>{title}</option>

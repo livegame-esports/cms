@@ -1,0 +1,1 @@
+<div class="btn btn-primary btn-block" {polldata}>{poll}</div>

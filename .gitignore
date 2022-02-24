@@ -1,0 +1,6 @@
+.env
+.env.backup
+
+/logs
+/files
+/modules_extra
