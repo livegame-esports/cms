@@ -1,6 +1,4 @@
 .env
 .env.backup
 
-/logs
-/files
-/modules_extra
+config.php

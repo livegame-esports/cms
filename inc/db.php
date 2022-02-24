@@ -1,6 +1,9 @@
 <?php
-$db["host"] = "127.0.0.1";
-$db["name"] = "livegame";
-$db["user"] = "login";
-$db["password"] = "password";
+
+$configurations = require(dirname(__DIR__) . '/config.php');
+
+$db["host"] = $configurations['mysql']['host'];
+$db["name"] = $configurations['mysql']['basename'];
+$db["user"] = $configurations['mysql']['username'];
+$db["password"] = $configurations['mysql']['password'];
 require("{$_SERVER['DOCUMENT_ROOT']}/inc/db1.php");
