@@ -6,4 +6,4 @@ $db["host"] = $configurations['mysql']['host'];
 $db["name"] = $configurations['mysql']['basename'];
 $db["user"] = $configurations['mysql']['username'];
 $db["password"] = $configurations['mysql']['password'];
-require("{$_SERVER['DOCUMENT_ROOT']}/inc/db1.php");
+require(__DIR__ . "/db1.php");

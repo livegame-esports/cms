@@ -1,0 +1,30 @@
+#!/usr/bin/php
+<?php
+
+ini_set('memory_limit', '5120M');
+set_time_limit(0);
+
+require(__DIR__ . '/inc/db.php');
+
+$files = glob(__DIR__ . '/sql/*.sql');
+$tempFile = __DIR__ . '/temp/migrations.temp';
+$migrationFiles = file_get_contents($tempFile);
+$migratedFiles = explode('|', $migrationFiles);
+
+foreach ($files as $file) {
+  $fullFilename = end(explode('/', $file));
+  $fileVariables = explode('.', $fullFilename);
+
+  $fileName = $fileVariables[0];
+  $fileExtension = $fileVariables[1];
+
+  if (!in_array($fileName, $migratedFiles)) {
+    echo 'not migrated ' . $fullFilename;
+    migrateSqlFile($fullFilename);
+  }
+}
+
+function migrateSqlFile($sqlFile)
+{
+  $sql = file_get_contents(__DIR__ . "/sql/{$sqlFile}");
+}

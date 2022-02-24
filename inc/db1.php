@@ -7,10 +7,9 @@ try {
 } catch(PDOException $e) {
 	exit("Ошибка подключения к базе данных.");
 }
-require("{$_SERVER['DOCUMENT_ROOT']}/inc/classes/class.database.php");
+require(__DIR__ . "/classes/class.database.php");
 $injSql = new Database($db);
 unset($db);
 
 $STH = $pdo->query("SELECT * FROM config LIMIT 1"); $STH->setFetchMode(PDO::FETCH_OBJ);
 $conf = $STH->fetch();
-?>
