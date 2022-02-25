@@ -1,3 +1,5 @@
+
+<!-- Start head.tpl -->
 <head>
 	<meta charset="UTF-8">
 	<title>{title}</title>
@@ -28,3 +30,4 @@
 		<span class="glyphicon glyphicon-ok result_ok_b disp-n"></span>
 		<span class="glyphicon glyphicon-remove result_error_b disp-n"></span>
 	</div>
+<!-- End head.tpl -->

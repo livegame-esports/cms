@@ -1,3 +1,5 @@
+
+<!-- Start template.tpl -->
 <div class="page">
 	<div class="row">
 		<div class="col-md-12">
@@ -322,3 +324,5 @@
 		};
 	</script>
 </div>
+
+<!-- End template.tpl -->

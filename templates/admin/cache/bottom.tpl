@@ -1,4 +1,6 @@
 
+<!-- Start bottom.tpl -->
+
 			<div class="clearfix"></div>
 			<footer>
 			</footer>
@@ -12,3 +14,4 @@
 		$('[data-toggle="dropdown"]').dropdown();
 	};
 </script>
+<!-- End bottom.tpl -->

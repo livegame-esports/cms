@@ -1,3 +1,5 @@
+
+<!-- Start menu.tpl -->
 <aside class="hidden-xs">
     <ul class="navigation">
         <li>
@@ -136,3 +138,4 @@
         </li>
     </ul>
 </aside>
+<!-- End menu.tpl -->

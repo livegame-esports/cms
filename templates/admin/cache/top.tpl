@@ -1,3 +1,5 @@
+
+<!-- Start top.tpl -->
 <div class="wapper">
 	<section>
 		<header class="container-fluid">
@@ -10,3 +12,4 @@
 			</a>
 
 		</header>
+<!-- End top.tpl -->
