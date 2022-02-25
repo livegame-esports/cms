@@ -26,7 +26,7 @@
 								<span class="m-icon icon-pencil"></span> Написать сообщение
 							</a>
 						</li>
-                      <li><a onclick="donate_money({profile_id});"><span class="fa fa-money"></span> Задонатить</a></li>
+						<li><a onclick="donate_money({profile_id});"><span class="fa fa-money"></span> Задонатить</a></li>
 						{if(isOnMyBlacklist($pdo, $id))}
 						<li onclick="removeFromBlackList({profile_id}, function(message) { alert(message) }); $(this).fadeOut();">
 							<a>
@@ -301,6 +301,7 @@
 				</div>
 			</div>
 
+			{*
 			{if('{dell}' != '1')}
 			<div class="block">
 				<div class="block_head">
@@ -366,6 +367,7 @@
 				</script>
 			</div>
 			{/if}
+			*}
 		</div>
 	</div>
 </div>
