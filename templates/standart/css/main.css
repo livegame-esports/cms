@@ -1,5 +1,12 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700');
+<<<<<<< HEAD
 @import url("../fonts/font-awesome.css?v=1645796530");
 @import url("bootstrap.css?v=1645796530");
 @import url("primary.css?v=1645796530");
 @import url("mystyles.css?v=1645796530"); /*Write down your styles in this file. The rest of the files can be replaced with the standard ones on updates.*/
+=======
+@import url("../fonts/font-awesome.css?v=1645796673");
+@import url("bootstrap.css?v=1645796673");
+@import url("primary.css?v=1645796673");
+@import url("mystyles.css?v=1645796673"); /*Write down your styles in this file. The rest of the files can be replaced with the standard ones on updates.*/
+>>>>>>> 10adeedb2ddf1c3343d7789a4f7eec6099d65719

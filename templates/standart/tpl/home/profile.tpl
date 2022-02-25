@@ -376,8 +376,8 @@
 	{include file="/index/authorization.tpl"}
 	{/if}
 
-  	{include file="/modules/users_visit.tpl"}
-  
+	{* include file="/modules/users_visit.tpl" *}
+
 	<div class="block">
 		<div class="block_head">
 			Сообщения на форуме
@@ -395,10 +395,7 @@
 			{func Widgets:user_bans('{profile_id}', '3')}
 		</div>
 	</div>
-  
-	{if(is_auth())}
+
 	{include file="/home/sidebar_secondary.tpl"}
-	{else}
-	{include file="/index/sidebar_secondary.tpl"}
-	{/if}
+
 </div>
