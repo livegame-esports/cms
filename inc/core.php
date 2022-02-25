@@ -237,5 +237,3 @@ $tpl->compile("main");
 eval(" ?>" . $tpl->result["main"] . "<?php ");
 $tpl->global_clear();
 exit;
-
-?>
