@@ -1,3 +1,5 @@
+
+<!-- Start elements/event.tpl -->
 <div class="event" id="event{id}">
 	<div>
 		<a href="../{link}">{content}</a>
@@ -16,3 +18,4 @@
 		<i class="m-icon icon-remove" onclick="dell_event({id})" tooltip="yes" data-placement="left" title="Удалить уведомление"></i>
 	<?php endif; ?>
 </div>
+<!-- End elements/event.tpl -->

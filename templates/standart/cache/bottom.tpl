@@ -1,3 +1,5 @@
+
+<!-- Start bottom.tpl -->
 					</div>
 					</div>
 					</div>
@@ -77,3 +79,4 @@
 						};
 					</script>
 					</body>
+<!-- End bottom.tpl -->

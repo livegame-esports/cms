@@ -1,3 +1,5 @@
+
+<!-- Start head.tpl -->
 	<head>
 		<meta charset="utf-8">
 		<title>{title}</title>
@@ -52,7 +54,9 @@
 	</head>
 	<body>
 		<?php if($conf->new_year == 1): ?>
-			<div class="b-page_newyear">
+			
+<!-- Start /elements/new_year.tpl -->
+<div class="b-page_newyear">
 	<div class="b-page__content">
 		<i class="b-head-decor">
 			<i class="b-head-decor__inner b-head-decor__inner_n1">
@@ -191,9 +195,15 @@
 
 	</div>
 </div>
+<!-- End /elements/new_year.tpl -->
+
 		<?php endif; ?>
 		<?php if($conf->win_day == 1): ?>
-			<div class="win_day"></div>
+			
+<!-- Start /elements/win_day.tpl -->
+<div class="win_day"></div>
+<!-- End /elements/win_day.tpl -->
+
 		<?php endif; ?>
 
 		<input id="token" type="hidden" value="{token}">
@@ -205,3 +215,4 @@
 			<span class="m-icon icon-remove result_error_b disp-n"></span>
 		</div>
 		<div id="result_player"></div>
+<!-- End head.tpl -->

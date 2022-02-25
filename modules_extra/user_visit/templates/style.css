@@ -1,0 +1,11 @@
+.user_visit {
+	width: 32px;
+    height: 32px;
+}
+.user_visit img {
+	width: 32px;
+    height: 32px;
+    border-radius: 6px;
+	margin-bottom: 5px;
+    margin-right: 5px;
+}

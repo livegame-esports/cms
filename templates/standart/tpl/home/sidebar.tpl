@@ -51,6 +51,8 @@
 	</div>
 </div>
 
+<div id="site_stats"> <script>get_site_stats(2);</script> </div>
+
 {if($conf->disp_last_online == '1')}
 <div class="block">
 	<div class="block_head">

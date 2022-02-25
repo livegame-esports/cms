@@ -26,6 +26,7 @@
 								<span class="m-icon icon-pencil"></span> Написать сообщение
 							</a>
 						</li>
+                      <li><a onclick="donate_money({profile_id});"><span class="fa fa-money"></span> Задонатить</a></li>
 						{if(isOnMyBlacklist($pdo, $id))}
 						<li onclick="removeFromBlackList({profile_id}, function(message) { alert(message) }); $(this).fadeOut();">
 							<a>
@@ -375,6 +376,8 @@
 	{include file="/index/authorization.tpl"}
 	{/if}
 
+  	{include file="/modules/users_visit.tpl"}
+  
 	<div class="block">
 		<div class="block_head">
 			Сообщения на форуме
@@ -392,7 +395,7 @@
 			{func Widgets:user_bans('{profile_id}', '3')}
 		</div>
 	</div>
-
+  
 	{if(is_auth())}
 	{include file="/home/sidebar_secondary.tpl"}
 	{else}

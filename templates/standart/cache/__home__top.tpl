@@ -1,3 +1,5 @@
+
+<!-- Start /home/top.tpl -->
 <div class="container-fluid wapper">
 	<div class="content">
 		<div class="header">
@@ -9,3 +11,4 @@
 						{menu}
 					</ul>
 				</div>
+<!-- End /home/top.tpl -->

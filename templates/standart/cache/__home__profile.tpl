@@ -1,3 +1,5 @@
+
+<!-- Start /home/profile.tpl -->
 <div class="col-lg-9 order-is-first">
 	<div class="row profile-page">
 		<div class="col-lg-4">
@@ -26,6 +28,7 @@
 								<span class="m-icon icon-pencil"></span> Написать сообщение
 							</a>
 						</li>
+                      <li><a onclick="donate_money({profile_id});"><span class="fa fa-money"></span> Задонатить</a></li>
 						<?php if(isOnMyBlacklist($pdo, $id)): ?>
 						<li onclick="removeFromBlackList({profile_id}, function(message) { alert(message) }); $(this).fadeOut();">
 							<a>
@@ -266,6 +269,10 @@
 							<td>{reit}</td>
 						</tr>
 						
+<!-- Start /home/profile_stats.tpl -->
+
+<!-- End /home/profile_stats.tpl -->
+
 						<?php else: ?>
 						<tr>
 							<td colspan="2">
@@ -370,7 +377,9 @@
 </div>
 <div class="col-lg-3 order-is-last">
 	<?php if(is_auth()): ?>
-	<div class="block">
+	
+<!-- Start /home/navigation.tpl -->
+<div class="block">
 	<div class="block_head">
 		Навигация
 	</div>
@@ -384,8 +393,12 @@
 		</ul>
 	</div>
 </div>
+<!-- End /home/navigation.tpl -->
+
 	<?php else: ?>
-	<div class="block">
+	
+<!-- Start /index/authorization.tpl -->
+<div class="block">
 	<div class="block_head">
 		Авторизация
 	</div>
@@ -396,8 +409,25 @@
 	<?php endif; ?>
 	<button class="btn btn-outline-primary btn-block" data-toggle="modal" data-target="#registration">Зарегистрироваться</button>
 </div>
+<!-- End /index/authorization.tpl -->
+
 	<?php endif; ?>
 
+  	
+<!-- Start /modules/users_visit.tpl -->
+<div class="block" style="margin-top: 5vh;">
+	<div class="block_head">
+		Посетители профиля:
+	</div>
+	<div id="users_visit" style="margin-top: 15px;">
+		<a class="user_visit" target="_blank" href="../profile?id={id}" tooltip="yes" title="" data-original-title="{login}"><img src="../{avatar}" alt="{login}"><script>get_user_visit({profile_id});</script>
+	</div>
+</div>
+
+<script>user_visit({profile_id});</script>
+<!-- End /modules/users_visit.tpl -->
+
+  
 	<div class="block">
 		<div class="block_head">
 			Сообщения на форуме
@@ -415,9 +445,11 @@
 			<?php if (class_exists("Widgets")) { $CE = new Widgets($pdo, $tpl); if(method_exists($CE, "user_bans")) { $tpl->show($CE->user_bans('{profile_id}', '3')); } unset($CE); } ?>
 		</div>
 	</div>
-
+  
 	<?php if(is_auth()): ?>
-	<div class="block">
+	
+<!-- Start /home/sidebar_secondary.tpl -->
+<div class="block">
 	<div class="block_head">
 		Сейчас онлайн <span id="users_online_number"></span>
 	</div>
@@ -425,8 +457,12 @@
 		<?php if (class_exists("Widgets")) { $CE = new Widgets($pdo, $tpl); if(method_exists($CE, "online_users")) { $tpl->show($CE->online_users()); } unset($CE); } ?>
 	</div>
 </div>
+<!-- End /home/sidebar_secondary.tpl -->
+
 	<?php else: ?>
-	<div class="block">
+	
+<!-- Start /index/sidebar_secondary.tpl -->
+<div class="block">
 	<div class="block_head">
 		Сейчас онлайн <span id="users_online_number"></span>
 	</div>
@@ -434,5 +470,8 @@
 		<?php if (class_exists("Widgets")) { $CE = new Widgets($pdo, $tpl); if(method_exists($CE, "online_users")) { $tpl->show($CE->online_users()); } unset($CE); } ?>
 	</div>
 </div>
+<!-- End /index/sidebar_secondary.tpl -->
+
 	<?php endif; ?>
 </div>
+<!-- End /home/profile.tpl -->

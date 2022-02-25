@@ -1,3 +1,5 @@
+
+<!-- Start /home/left.tpl -->
 <ul class="collapsible-menu user-menu">
 	<li class="collapsible">
 		<a href="">
@@ -59,3 +61,4 @@
 		</ul>
 	</li>
 </ul>
+<!-- End /home/left.tpl -->

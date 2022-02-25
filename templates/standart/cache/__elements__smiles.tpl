@@ -1,3 +1,5 @@
+
+<!-- Start /elements/smiles.tpl -->
 <div class="smiles_box disp-b" id="gcms_smiles">
 	<img onclick="set_smile(this);" class="smile" title=":smile01:" src="../files/smiles/1.png">
 	<img onclick="set_smile(this);" class="smile" title=":smile02:" src="../files/smiles/2.png">
@@ -82,3 +84,4 @@
 	</div>
 	<?php endif; ?>
 <?php endif; ?>
+<!-- End /elements/smiles.tpl -->

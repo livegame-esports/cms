@@ -1,3 +1,5 @@
+
+<!-- Start /home/page_top.tpl -->
 			</div>
 		</div>
 		<div class="navigation">
@@ -10,7 +12,9 @@
 	
 		<div class="container">
 			<?php if($monitoringType == 2): ?>
-    <div class="table-responsive monitoring-table <?php if($monitoringType == 2): ?>big-monitoring-table<?php endif; ?>">
+    
+<!-- Start parts/monitoring_table.tpl -->
+<div class="table-responsive monitoring-table <?php if($monitoringType == 2): ?>big-monitoring-table<?php endif; ?>">
     <table class="table table-bordered">
         <thead>
         <tr>
@@ -31,6 +35,8 @@
         </tbody>
     </table>
 </div>
+<!-- End parts/monitoring_table.tpl -->
+
 <?php else: ?>
     <div class="row">
         <div class="col-lg-3">
@@ -42,16 +48,22 @@
         </div>
         <?php if($monitoringType == 0): ?>
             <div class="col-lg-9 px-0 px-lg-3">
-                <div class="monitoring">
+                
+<!-- Start parts/monitoring_block.tpl -->
+<div class="monitoring">
     <div id="servers">
         <div class="loader"></div>
         <script>get_servers();</script>
     </div>
 </div>
+<!-- End parts/monitoring_block.tpl -->
+
             </div>
         <?php else: ?>
             <div class="col-lg-9">
-                <div class="table-responsive monitoring-table <?php if($monitoringType == 2): ?>big-monitoring-table<?php endif; ?>">
+                
+<!-- Start parts/monitoring_table.tpl -->
+<div class="table-responsive monitoring-table <?php if($monitoringType == 2): ?>big-monitoring-table<?php endif; ?>">
     <table class="table table-bordered">
         <thead>
         <tr>
@@ -72,9 +84,12 @@
         </tbody>
     </table>
 </div>
+<!-- End parts/monitoring_table.tpl -->
+
             </div>
         <?php endif; ?>
     </div>
 <?php endif; ?>
 
 			<div class="row">
+<!-- End /home/page_top.tpl -->

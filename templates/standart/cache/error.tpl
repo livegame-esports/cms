@@ -1,3 +1,5 @@
+
+<!-- Start error.tpl -->
 <div class="col-lg-9 order-is-first">
 	<div class="noty-block error">
 		<h4>Произошла ошибка...</h4>
@@ -5,7 +7,9 @@
 	</div>
 </div>
 <div class="col-lg-3 order-is-last">
-	<div class="block">
+	
+<!-- Start /home/navigation.tpl -->
+<div class="block">
 	<div class="block_head">
 		Навигация
 	</div>
@@ -19,4 +23,7 @@
 		</ul>
 	</div>
 </div>
+<!-- End /home/navigation.tpl -->
+
 </div>
+<!-- End error.tpl -->

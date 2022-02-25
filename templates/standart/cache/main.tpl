@@ -1,3 +1,5 @@
+
+<!-- Start main.tpl -->
 <?php 
 $theme = '1'; 
 $monitoringType = '0'; 
@@ -68,7 +70,9 @@ $footer_description = 'Рады видеть Вас на нашем игрово
 <!DOCTYPE html>
 <html lang="ru">
 	<?php if($conf->off == 1 && !is_admin()): ?>
-		<?php $off_data = db_get_info($pdo, "off_message", "config__secondary", 'null', 0); ?>
+		
+<!-- Start off_site.tpl -->
+<?php $off_data = db_get_info($pdo, "off_message", "config__secondary", 'null', 0); ?>
 <head>
 	<meta charset="UTF-8">
 	<title><?php echo $conf->name; ?></title>
@@ -87,7 +91,10 @@ $footer_description = 'Рады видеть Вас на нашем игрово
 </head>
 <body>
 	<h1><?php echo $off_data[0]['off_message']; ?></h1>
+<!-- End off_site.tpl -->
+
 	<?php else: ?>
 		{content}
 	<?php endif; ?>
 </html>
+<!-- End main.tpl -->
