@@ -23,21 +23,12 @@
 		<br>
 	</div>
 	{/if}
-	
-	<div class="col-lg-12">
-		<div class="bs-callout bs-callout-info">
-			<h5>Дополнительная информация</h5>
-		</div><br>
-	</div>
 
 	<div class="col-md-6">
 		<div class="panel panel-default">
 			<div class="panel-heading">Основные настройки</div>
 			<div class="panel-body">
-				<b class="f-l">Версия движка: </b> <div id="version"><img src="{site_host}templates/admin/img/loader.gif"></div>
-				<div class="claerfix"></div><br>
-				<hr>
-
+			
 				<b>Название сайта</b>
 				<div class="input-group">
 					<span class="input-group-btn">
