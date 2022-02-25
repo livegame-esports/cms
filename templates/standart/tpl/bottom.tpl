@@ -50,20 +50,6 @@
 									<div id="cote" onclick="click_cote();"><img src="{site_host}/ajax/sound/cote1.gif"></div>
 									{/if}
 								</div>
-
-								<div class="col-lg-12">
-									<hr class="my-3">
-								</div>
-
-								<div class="col-lg-8 copyright">
-									<p><a href="{site_host}" title="{site_name}">{site_name}</a> © Все права защищены</p>
-								</div>
-								<div class="col-lg-4 banners">
-									{for($i=0;$i < count($footer_banners);$i++)} <a href="{{$footer_banners[$i]['link']}}" target="_blank">
-										<img src="{{$footer_banners[$i]['img']}}" alt="banner">
-										</a>
-										{/for}
-								</div>
 							</div>
 						</div>
 					</div>

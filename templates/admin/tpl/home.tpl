@@ -4,21 +4,21 @@
 		<div class="bs-callout bs-callout-error">
 			<h5>Важно!</h5>
 
-            {if({needToRemoveInstaller})}
-				<p>В целях безопасности рекомендуется удалить папку <b>modules/install/</b> или <a href="../dell.php" target="_blank" class="text-danger"><b>Перейдите СЮДА.</b></a></p>
-            {/if}
+			{if({needToRemoveInstaller})}
+			<p>В целях безопасности рекомендуется удалить папку <b>modules/install/</b> или <a href="../dell.php" target="_blank" class="text-danger"><b>Перейдите СЮДА.</b></a></p>
+			{/if}
 
-            {if({needToGiveAccessToRewriteFiles})}
-				<p>Необходимо установить права записи на файлы движка для PHP, в противном случае возможно некорректная работа движка</p>
-            {/if}
+			{if({needToGiveAccessToRewriteFiles})}
+			<p>Необходимо установить права записи на файлы движка для PHP, в противном случае возможно некорректная работа движка</p>
+			{/if}
 
-            {if({needToCreateLogsDirectory})}
-				<p>Необходимо создать папку <b>logs</b> с закрытым доступом из вне в корне движка</p>
-            {/if}
+			{if({needToCreateLogsDirectory})}
+			<p>Необходимо создать папку <b>logs</b> с закрытым доступом из вне в корне движка</p>
+			{/if}
 
-            {if({needToCreateUpdatesDirectory})}
-	            <p>Необходимо создать папку <b>modules/updates</b> в корне движка</p>
-            {/if}
+			{if({needToCreateUpdatesDirectory})}
+			<p>Необходимо создать папку <b>modules/updates</b> в корне движка</p>
+			{/if}
 		</div>
 		<br>
 	</div>
@@ -28,7 +28,7 @@
 		<div class="panel panel-default">
 			<div class="panel-heading">Основные настройки</div>
 			<div class="panel-body">
-			
+
 				<b>Название сайта</b>
 				<div class="input-group">
 					<span class="input-group-btn">
@@ -37,8 +37,11 @@
 					<input type="text" class="form-control" id="site_name" maxlength="255" autocomplete="off" value="{site_name}">
 				</div>
 				<div id="edit_site_name_result"></div>
+				{*
 				<hr>
+				*}
 
+				{*
 				<b>Пароль админ панели</b>
 				<div class="input-group">
 					<span class="input-group-btn">
@@ -70,10 +73,9 @@
 					<p><a target="_blank" href="https://gamecms.ru/wiki/developer_mode"><span class="glyphicon glyphicon-link"></span> Как получить ключ и что это такое?</a></p>
 				</div>
 				<input type="hidden" class="form-control" id="host" value="{host}">
+				*}
 			</div>
 		</div>
-
-		<script>get_main_info();</script>
 
 		<div class="panel panel-default">
 			<div class="panel-heading">Регистрация пользователей</div>
@@ -110,6 +112,7 @@
 				</div>
 				<hr>
 
+				{*
 				<b>Стандартная регистрация</b><br>
 				<div class="btn-group" data-toggle="buttons">
 					<label class="btn btn-default {if($conf->standard_registration)} active {/if}" onclick="change_value('config','standard_registration','1','1');">
@@ -123,6 +126,7 @@
 					</label>
 				</div>
 				<hr>
+				*}
 
 				<b>Регистрация через Вконтакте</b><br>
 				<div class="btn-group" data-toggle="buttons">
@@ -145,12 +149,15 @@
 					<input value="{vk_service_key}" type="text" class="form-control" id="vk_service_key" maxlength="100" autocomplete="off" placeholder="Сервисный ключ доступа">
 				</div>
 				<div id="edit_vk_result"></div>
+				{*
 				<div class="bs-callout bs-callout-info mt-10">
 					<h5>Инструкция</h5>
 					<p><a target="_blank" href="https://gamecms.ru/wiki/avtorizatsiya-cherez-VK"><span class="glyphicon glyphicon-link"></span> Нажмите для перехода к инструкции</a></p>
 				</div>
+				*}
 				<hr>
 
+				{*
 				<div class="row">
 					<div class="col-md-4">
 						<b>Регистрация через Steam</b><br>
@@ -183,10 +190,10 @@
 					<div class="col-md-4">
 						<b>Формат STEAM ID</b><br>
 						<select class="form-control" onchange="change_value('config__secondary','steam_id_format',$(this).val(),'1');">
-							<option value="0" {if('{steam_id_format}' == '0')} selected {/if}>
+							<option value="0" {if('{steam_id_format}'=='0' )} selected {/if}>
 								STEAM_0:X:XXXXXX (cs1.6)
 							</option>
-							<option value="1" {if('{steam_id_format}' == '1')} selected {/if}>
+							<option value="1" {if('{steam_id_format}'=='1' )} selected {/if}>
 								STEAM_1:X:XXXXXX (cs:go)
 							</option>
 						</select>
@@ -204,6 +211,7 @@
 					<p><a target="_blank" href="https://gamecms.ru/wiki/avtorizatsiya-cherez-steam"><span class="glyphicon glyphicon-link"></span> Нажмите для перехода к инструкции</a></p>
 				</div>
 				<hr>
+				*}
 
 				<b>Регистрация через facebook</b><br>
 				<div class="btn-group" data-toggle="buttons">
@@ -225,13 +233,16 @@
 					<input value="{fb_key}" type="text" class="form-control" id="fb_key" maxlength="100" autocomplete="off" placeholder="Секрет приложения">
 				</div>
 				<div id="edit_fb_result"></div>
+				{*
 				<div class="bs-callout bs-callout-info mt-10">
 					<h5>Инструкция</h5>
 					<p><a target="_blank" href="https://gamecms.ru/wiki/avtorizatsiya-cherez-fb"><span class="glyphicon glyphicon-link"></span> Нажмите для перехода к инструкции</a></p>
 				</div>
+				*}
 			</div>
 		</div>
 
+		{*
 		<div class="panel panel-default">
 			<div class="panel-heading">Пагинатор</div>
 			<div class="panel-body">
@@ -267,9 +278,11 @@
 				<div id="edit_paginator_result"></div>
 			</div>
 		</div>
+		*}
 	</div>
 
 	<div class="col-md-6">
+		{*
 		<div class="panel panel-default">
 			<div class="panel-heading">Виджеты</div>
 			<div class="panel-body">
@@ -397,14 +410,15 @@
 						<button class="btn btn-default pd-23-12" type="button" onclick="editTopDonatorsWidget();">Изменить</button>
 					</span>
 					<select id="top_donators_show_sum" class="form-control">
-						<option value="1" {if('{top_donators_show_sum}' == '1')} selected {/if}>Отображать сумму доната</option>
-						<option value="2" {if('{top_donators_show_sum}' == '2')} selected {/if}>Не отображать сумму доната</option>
+						<option value="1" {if('{top_donators_show_sum}'=='1' )} selected {/if}>Отображать сумму доната</option>
+						<option value="2" {if('{top_donators_show_sum}'=='2' )} selected {/if}>Не отображать сумму доната</option>
 					</select>
 					<input value="{top_donators_count}" type="text" class="form-control" id="top_donators_count" maxlength="2" placeholder="Количество выводимых донатеров">
 				</div>
 			</div>
 		</div>
-
+		*}
+		{*
 		<div class="panel panel-default">
 			<div class="panel-heading">Виджеты Вконтакте/Facebook</div>
 			<div class="panel-body mb-0">
@@ -464,6 +478,7 @@
 				<div id="edit_vk_admin_result" class="mb-0"></div>
 			</div>
 		</div>
+		*}
 
 		<div class="panel panel-default">
 			<div class="panel-heading">Часовой пояс сайта</div>
@@ -499,7 +514,7 @@
 				<button class="btn btn-default" type="button" onclick="fast_admin_action('dell_cache');">Выполнить</button>
 			</div>
 		</div>
-
+		{*
 		<div class="panel panel-default">
 			<div class="panel-heading">Главный администратор</div>
 			<div class="panel-body mb-0">
@@ -514,7 +529,8 @@
 				<div id="edit_admins_ids_result"><br></div>
 			</div>
 		</div>
-
+		*}
+		{*
 		<div class="panel panel-default">
 			<div class="panel-heading">Выключение сайта</div>
 			<div class="panel-body mb-0">
@@ -539,7 +555,8 @@
 				<div id="edit_off_message_result"></div>
 			</div>
 		</div>
-
+		*}
+		{*
 		<div class="panel panel-default">
 			<div class="panel-heading">Протокол, используемый сайтом</div>
 			<div class="panel-body">
@@ -548,21 +565,22 @@
 						<button class="btn btn-default" type="button" onclick="edit_protocol();">Изменить</button>
 					</span>
 					<select id="protocol" class="form-control">
-						<option value="1" {if('{protocol}' == '1')} selected {/if}>Определять автоматически</option>
-						<option value="2" {if('{protocol}' == '2')} selected {/if}>HTTP</option>
-						<option value="3" {if('{protocol}' == '3')} selected {/if}>HTTPS</option>
+						<option value="1" {if('{protocol}'=='1' )} selected {/if}>Определять автоматически</option>
+						<option value="2" {if('{protocol}'=='2' )} selected {/if}>HTTP</option>
+						<option value="3" {if('{protocol}'=='3' )} selected {/if}>HTTPS</option>
 					</select>
 				</div>
 			</div>
 		</div>
+		*}
 	</div>
 </div>
-
+{*
 <div id="description" class="modal fade">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title"> Описание
+				<h4 class="modal-title"> Описание </h4>
 			</div>
 			<div class="modal-body" id="update_description">
 				<center><img src="{site_host}templates/admin/img/loader.gif"></center>
@@ -573,3 +591,4 @@
 		</div>
 	</div>
 </div>
+*}

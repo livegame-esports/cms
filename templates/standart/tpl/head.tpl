@@ -19,7 +19,7 @@
 		<meta name="description" content="{description}">
 		<meta name="keywords" content="{keywords}">
 		<meta name="document-state" content="dynamic">
-		<meta name="author" content="minibam.ru">
+		<meta name="author" content="ghoul.uz">
 
 		<meta property="og:title" content="{title}">
 		<meta property="og:description" content="{description}">
@@ -30,7 +30,7 @@
 
 		<meta name="dc.title" content="{title}">
 		<meta name="dc.rights" content="Все права защищены.">
-		<meta name="dc.creator" content="minibam.ru">
+		<meta name="dc.creator" content="ghoul.uz">
 		<meta name="dc.language" content="RU">
 
 		<script src="{site_host}templates/{template}/js/jquery.js?v={cache}"></script>
