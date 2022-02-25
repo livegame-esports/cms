@@ -1,5 +1,3 @@
-
-<!-- Start /home/index.tpl -->
 <div class="col-lg-9 order-is-first">
 	<div class="block disp-n" id="notifications_line">
 		<div class="block_head">
@@ -40,9 +38,7 @@
 		</a>
 	</div>
 
-	
-<!-- Start /elements/chat.tpl -->
-<div class="block">
+	<div class="block">
 	<div class="block_head">
 		Чат
 	</div>
@@ -242,8 +238,6 @@
 		$("body").trigger("mousemove");
 	});
 </script>
-<!-- End /elements/chat.tpl -->
-
 
 	<?php if($conf->show_news != '0'): ?>
 	<div class="block">
@@ -280,9 +274,7 @@
 </div>
 
 <div class="col-lg-3 order-is-last">
-	
-<!-- Start /home/navigation.tpl -->
-<div class="block">
+	<div class="block">
 	<div class="block_head">
 		Навигация
 	</div>
@@ -296,11 +288,7 @@
 		</ul>
 	</div>
 </div>
-<!-- End /home/navigation.tpl -->
-
-	
-<!-- Start /home/sidebar.tpl -->
-<div class="block">
+	<div class="block">
 	<div class="block_head">
 		Сейчас онлайн <span id="users_online_number"></span>
 	</div>
@@ -344,6 +332,8 @@
 	</div>
 </div>
 
+<div id="site_stats"> <script>get_site_stats(2);</script> </div>
+
 <?php if($conf->disp_last_online == '1'): ?>
 <div class="block">
 	<div class="block_head">
@@ -354,11 +344,8 @@
 	</div>
 </div>
 <?php endif; ?>
-<!-- End /home/sidebar.tpl -->
 
-	
-<!-- Start /elements/vk_widgets.tpl -->
-<?php if($conf->vk_admin == 1 or $conf->vk_group == 1): ?>
+	<?php if($conf->vk_admin == 1 or $conf->vk_group == 1): ?>
 	<div class="vk-widgets">
 		<?php if($conf->vk_admin == 1): ?>
 		<div class="block">
@@ -413,7 +400,4 @@
 		<?php endif; ?>
 	</div>
 <?php endif; ?>
-<!-- End /elements/vk_widgets.tpl -->
-
 </div>
-<!-- End /home/index.tpl -->

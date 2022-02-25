@@ -2,7 +2,7 @@
 <!-- Start main.tpl -->
 <?php 
 $theme = '1'; 
-$monitoringType = '0'; 
+$monitoringType = '1'; 
 $countOfServersDisplayed = '3'; 
 $slider[0]['title'] = 'Магазин - продажа услуг в онлайн режиме.'; 
 $slider[0]['content'] = 'В магазине Вы можете оплатить любую из представленных услуг и сразу же воспользоваться ею на игровом сервере.'; 

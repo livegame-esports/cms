@@ -1,5 +1,3 @@
-
-<!-- Start elements/top_users.tpl -->
 <a href="../profile?id={id}">
 	<img src="../{avatar}" alt="{login}">
 	<div>
@@ -9,4 +7,3 @@
 		</p>
 	</div>
 </a>
-<!-- End elements/top_users.tpl -->
